@@ -2,7 +2,7 @@
 
 Hackathon demo for **Cursor × Thrad · London · 28 May 2026** (Track 2 — Sell-Side & Measurement).
 
-Slice 1 scaffolded the UI; **Slice 2** wires `/chat` to Tavily search + Claude for grounded answers. API keys required (see `.env.example`).
+Slice 1 scaffolded the UI; **Slice 2** wires `/chat` to Tavily search + Claude. **Slice 3** adds intent scoring and a **mock** sponsored ad when score ≥ 0.70 (no Thrad signup required). API keys: Tavily + Anthropic (see `.env.example`).
 
 ## Prerequisites
 
@@ -41,12 +41,14 @@ By default the frontend calls `/api/*`, which Next.js proxies to the backend on 
 
 Track status in [`slices/PROGRESS.md`](slices/PROGRESS.md).
 
-## Slice 2 exit criteria (current)
+## Slice 3 (done on `feat/slice-03-thrad-blend`)
 
-- [ ] `TAVILY_API_KEY` and `ANTHROPIC_API_KEY` set in `backend/.env`
-- [ ] Type a question → grounded Claude response (not mock)
-- [ ] Source links appear under the assistant message (“Powered by Tavily”)
-- [ ] `/health` reports both keys configured
+- [x] High-intent question → mock sponsored card in Ad panel
+- [x] Low-intent question → “No placement” in Ad panel
+- [x] Intent score + tier badge in side panel
+- [x] `/health` reports `thrad_mode: mock`
+
+**Next:** Slice 4 — golden master dropdown ([`slices/slice-04-dropdown.md`](slices/slice-04-dropdown.md))
 
 ## Project layout
 

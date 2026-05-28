@@ -1,6 +1,8 @@
 export type ChatRequest = {
   message: string;
   source: "freeform" | "dropdown";
+  intent?: IntentPayload;
+  focus?: FocusPayload;
 };
 
 export type TavilySource = {
@@ -9,11 +11,32 @@ export type TavilySource = {
   content: string;
 };
 
+export type IntentPayload = {
+  score: number;
+  tier: string;
+  ad_eligible: boolean;
+};
+
+export type FocusPayload = {
+  category: string;
+  sub_category: string;
+};
+
+export type AdPayload = {
+  headline: string;
+  body: string;
+  cta_url: string;
+  cta_label: string;
+  advertiser?: string;
+  mock?: boolean;
+};
+
 export type ChatResponse = {
   response: string;
   sources: TavilySource[];
-  intent: null;
-  ad: null;
+  intent: IntentPayload | null;
+  ad: AdPayload | null;
+  focus: FocusPayload | null;
   metrics: null;
 };
 

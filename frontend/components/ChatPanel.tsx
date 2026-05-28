@@ -41,7 +41,7 @@ export default function ChatPanel({
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {messages.length === 0 && (
           <p className="text-sm text-text-muted">
-            Send a message — answers are grounded with Tavily search + Claude.
+            Send a message — Tavily + Claude; high commercial intent unlocks a mock ad.
           </p>
         )}
         {messages.map((msg, i) => (

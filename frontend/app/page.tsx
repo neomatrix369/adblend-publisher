@@ -4,13 +4,16 @@ import { useCallback, useState } from "react";
 import ChatPanel, { type Message } from "@/components/ChatPanel";
 import Dropdown from "@/components/Dropdown";
 import SidePanel from "@/components/SidePanel";
-import { postChat } from "@/lib/api";
+import { postChat, type AdPayload, type FocusPayload, type IntentPayload } from "@/lib/api";
 
 export default function Home() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [dropdownValue, setDropdownValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [intent, setIntent] = useState<IntentPayload | null>(null);
+  const [focus, setFocus] = useState<FocusPayload | null>(null);
+  const [ad, setAd] = useState<AdPayload | null>(null);
 
   const sendMessage = useCallback(async () => {
     const text = input.trim();
@@ -26,6 +29,9 @@ export default function Home() {
         message: text,
         source: dropdownValue ? "dropdown" : "freeform",
       });
+      setIntent(data.intent);
+      setFocus(data.focus);
+      setAd(data.ad);
       setMessages((prev) => [
         ...prev,
         {
@@ -76,7 +82,7 @@ export default function Home() {
             isLoading={isLoading}
           />
         </main>
-        <SidePanel />
+        <SidePanel intent={intent} focus={focus} ad={ad} />
       </div>
     </div>
   );

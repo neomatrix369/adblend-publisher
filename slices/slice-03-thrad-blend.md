@@ -54,29 +54,21 @@ def score(message: str) -> dict:
 
 ## Thrad Integration
 
-**File:** `backend/thrad_client.py`
+**Hackathon note:** Publisher signup is unclear during the event — use a **mock** in `backend/thrad_client.py` that returns a sponsored card when `intent_score >= 0.70`. Swap for the live bid endpoint (`https://docs.thrads.ai/api/api-reference/bid-request`) when you have a staging key.
+
+**File:** `backend/thrad_client.py` (mock)
 
 ```python
-import httpx, os
-
-THRAD_ENDPOINT = "https://ssp.thrads.ai/api/v1/ad/bid"
-PUBLISHER_KEY  = os.getenv("THRAD_STAGING_KEY")
-
-def request_ad(focus: dict, intent_score: float) -> dict | None:
-    payload = {
-        "publisher_id": "my-hackathon-bot",
-        "context": {
-            "category": focus.get("category", ""),
-            "sub_category": focus.get("sub_category", "")
-        },
-        "intent_score": intent_score,
-        "format": "sponsored_message"
+def request_ad(message: str, focus: dict, intent_score: float) -> dict | None:
+    if intent_score < 0.70:
+        return None
+    return {
+        "headline": "...",
+        "body": "...",
+        "cta_url": "https://www.thrad.ai/",
+        "cta_label": "Explore Thrad",
+        "mock": True,
     }
-    headers = {"Authorization": f"Bearer {PUBLISHER_KEY}"}
-    resp = httpx.post(THRAD_ENDPOINT, json=payload, headers=headers, timeout=3.0)
-    if resp.status_code == 200:
-        return resp.json()   # ad payload
-    return None              # no fill — silent fallback
 ```
 
 ---
@@ -142,8 +134,10 @@ When `ad` is null:
 
 ## Environment
 
+Mock mode needs no `THRAD_STAGING_KEY`. Optional later:
+
 ```
-THRAD_STAGING_KEY=...   # staging key always returns an ad, no cost
+THRAD_STAGING_KEY=...   # when live bid is wired
 ```
 
 ---
@@ -161,8 +155,8 @@ THRAD_STAGING_KEY=...   # staging key always returns an ad, no cost
 
 ## Done When
 
-- [ ] High-intent query → ad card appears in side panel
-- [ ] Low-intent query → "No placement" message shown
-- [ ] Thrad no-fill → graceful fallback, no UI error
-- [ ] Intent score visible in intent panel (score + tier badge)
-- [ ] Staging key used (never production key)
+- [x] High-intent query → ad card appears in side panel
+- [x] Low-intent query → "No placement" message shown
+- [x] Thrad no-fill → graceful fallback, no UI error (mock returns `null` when score &lt; 0.70)
+- [x] Intent score visible in intent panel (score + tier badge)
+- [x] Mock Thrad used (live staging key optional later)
