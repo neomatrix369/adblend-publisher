@@ -3,6 +3,7 @@ export type ChatRequest = {
   source: "freeform" | "dropdown";
   intent?: IntentPayload;
   focus?: FocusPayload;
+  ads_enabled?: boolean;
 };
 
 export type TavilySource = {
@@ -123,6 +124,14 @@ export async function postMetricsReset(): Promise<SessionMetrics> {
   const res = await fetch(`${API_BASE}/metrics/reset`, { method: "POST" });
   if (!res.ok) {
     throw new Error(`Metrics reset failed: ${res.status}`);
+  }
+  return res.json();
+}
+
+export async function postDemoReset(): Promise<SessionMetrics> {
+  const res = await fetch(`${API_BASE}/demo/reset`, { method: "POST" });
+  if (!res.ok) {
+    throw new Error(`Demo reset failed: ${res.status}`);
   }
   return res.json();
 }

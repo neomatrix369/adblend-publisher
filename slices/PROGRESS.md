@@ -11,12 +11,12 @@ Last updated: 2026-05-28
 | 5 | Live Intent + Attributes UI | **done** | Intent panel, rationale, tokens, focus chip |
 | 6 | AdTech Metrics Panel | **done** | `metrics.py`, panel + reset; `/chat` returns metrics |
 | 7 | Overmind Trace | **done** | Overmind init, trace panel, pipeline spans; branch `feat/slice-07-overmind-trace` |
-| 8 | Polish + Demo Prep | **queued** | Tavily cache, demo reset, ad toggle — Could |
+| 8 | Polish + Demo Prep | **in progress** | Scroll fix, Tavily cache, demo reset, ad toggle; branch `feat/slice-08-polish` |
 | 9 | Frontend UI/UX Polish | **done** | Design system, Lucide icons, a11y, responsive layout; branch `feat/slice-09-frontend-ux` |
 
 ## Active slice
 
-**Slice 8 — Polish + Demo Prep** (`slices/slice-08-polish.md`) — queued
+**Slice 8 — Polish + Demo Prep** (`slices/slice-08-polish.md`) — in progress
 
 ## Slice 9 completed
 

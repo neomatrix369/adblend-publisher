@@ -22,6 +22,7 @@ from intent import INTENT_GATE_THRESHOLD, score_intent
 from metrics import metrics as session_metrics
 from overmind_setup import init_overmind, is_overmind_configured
 from thrad_client import request_ad
+from tavily_client import clear_cache as clear_tavily_cache
 from tavily_client import search as tavily_search
 from trace_collector import TraceCollector, request_trace_root
 
@@ -65,6 +66,7 @@ class ChatRequest(BaseModel):
     source: Literal["freeform", "dropdown"] = "freeform"
     intent: IntentPayload | None = None
     focus: Focus | None = None
+    ads_enabled: bool = True
 
 
 class TavilySource(BaseModel):
@@ -171,6 +173,14 @@ async def reset_metrics():
     return session_metrics.to_dict()
 
 
+@app.post("/demo/reset")
+async def reset_demo():
+    """Clear session metrics and Tavily cache for a clean demo run."""
+    session_metrics.reset()
+    clear_tavily_cache()
+    return session_metrics.to_dict()
+
+
 @app.get("/health")
 async def health():
     return {
@@ -224,7 +234,7 @@ async def chat(req: ChatRequest):
         ) from exc
 
     ad_data: dict[str, Any] | None = None
-    if intent.score >= INTENT_GATE_THRESHOLD:
+    if req.ads_enabled and intent.score >= INTENT_GATE_THRESHOLD:
         with trace.record("thrad.bid"):
             ad_data = await asyncio.to_thread(
                 request_ad,
@@ -235,7 +245,7 @@ async def chat(req: ChatRequest):
 
     ad = AdPayload(**ad_data) if ad_data else None
 
-    thrad_called = intent.score >= INTENT_GATE_THRESHOLD
+    thrad_called = req.ads_enabled and intent.score >= INTENT_GATE_THRESHOLD
     ad_served = ad is not None
     session_metrics.record(
         intent_tier=intent.tier,

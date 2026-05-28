@@ -6,9 +6,25 @@ import { tierBadgeClass } from "@/lib/tier-styles";
 type IntentPanelProps = {
   intent: IntentPayload | null;
   focus: FocusPayload | null;
+  isLoading?: boolean;
 };
 
-export default function IntentPanel({ intent, focus }: IntentPanelProps) {
+function IntentSkeleton() {
+  return (
+    <div className="mt-4 space-y-3" aria-hidden>
+      <div className="h-4 w-full animate-pulse rounded bg-background-muted" />
+      <div className="h-2 w-full animate-pulse rounded-full bg-background-muted" />
+      <div className="h-4 w-2/3 animate-pulse rounded bg-background-muted" />
+      <div className="h-8 w-full animate-pulse rounded-md bg-background-muted" />
+    </div>
+  );
+}
+
+export default function IntentPanel({
+  intent,
+  focus,
+  isLoading = false,
+}: IntentPanelProps) {
   const scorePercent =
     intent != null ? Math.round(intent.score * 100) : null;
 
@@ -19,7 +35,9 @@ export default function IntentPanel({ intent, focus }: IntentPanelProps) {
     <section className="panel-card p-4">
       <h2 className="panel-section-title">Intent</h2>
 
-      {intent == null ? (
+      {isLoading && intent == null ? (
+        <IntentSkeleton />
+      ) : intent == null ? (
         <p className="mt-3 text-sm text-foreground-muted">
           Send a message to score commercial intent and eligibility.
         </p>

@@ -8,6 +8,7 @@ import Dropdown from "@/components/Dropdown";
 import SidePanel from "@/components/SidePanel";
 import {
   postChat,
+  postDemoReset,
   postMetricsReset,
   type AdPayload,
   type DatasetEntry,
@@ -33,6 +34,8 @@ export default function Home() {
   const [overmindConfigured, setOvermindConfigured] = useState(false);
   const [apiReachable, setApiReachable] = useState<boolean | null>(null);
   const [isResettingMetrics, setIsResettingMetrics] = useState(false);
+  const [isResettingDemo, setIsResettingDemo] = useState(false);
+  const [adsEnabled, setAdsEnabled] = useState(true);
 
   const handleInputChange = useCallback(
     (value: string) => {
@@ -72,6 +75,7 @@ export default function Home() {
       const data = await postChat({
         message: text,
         source: fromDropdown ? "dropdown" : "freeform",
+        ads_enabled: adsEnabled,
         ...(fromDropdown && selectedEntry
           ? {
               intent: {
@@ -116,7 +120,36 @@ export default function Home() {
     } finally {
       setIsLoading(false);
     }
-  }, [input, isLoading, selectedEntry]);
+  }, [input, isLoading, selectedEntry, adsEnabled]);
+
+  const handleResetDemo = useCallback(async () => {
+    if (isResettingDemo) return;
+    setIsResettingDemo(true);
+    try {
+      await postDemoReset();
+    } catch {
+      /* metrics reset is best-effort; UI state always clears */
+    } finally {
+      setMessages([]);
+      setInput("");
+      setDropdownValue("");
+      setSelectedEntry(null);
+      setIntent(null);
+      setFocus(null);
+      setAd(null);
+      setTokens(null);
+      setTrace(null);
+      setMetrics({
+        total_queries: 0,
+        ads_served: 0,
+        no_fill: 0,
+        blocked: 0,
+        fill_rate: 0,
+        last_impression: null,
+      });
+      setIsResettingDemo(false);
+    }
+  }, [isResettingDemo]);
 
   const handleResetMetrics = useCallback(async () => {
     if (isResettingMetrics) return;
@@ -153,7 +186,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="flex min-h-dvh flex-col bg-background text-foreground">
+    <div className="flex h-dvh max-h-dvh flex-col overflow-hidden bg-background text-foreground">
       <header className="shrink-0 border-b border-panel-border bg-background-muted/60 backdrop-blur-md">
         <div className="flex flex-col gap-3 px-4 py-3 sm:flex-row sm:items-center sm:gap-4 md:px-6">
           <div className="flex min-w-0 items-center gap-3">
@@ -207,12 +240,20 @@ export default function Home() {
               onChange={handleDropdownChange}
               onSelectEntry={handleSelectEntry}
             />
+            <button
+              type="button"
+              onClick={() => void handleResetDemo()}
+              disabled={isResettingDemo || isLoading}
+              className="shrink-0 cursor-pointer rounded-md border border-panel-border px-3 py-2 text-xs font-medium text-foreground-muted transition-colors hover:border-accent/40 hover:text-foreground disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {isResettingDemo ? "Resetting…" : "Reset demo"}
+            </button>
           </div>
         </div>
       </header>
 
-      <div className="flex min-h-0 flex-1 flex-col lg:flex-row">
-        <main className="flex min-h-0 min-w-0 flex-1 flex-col lg:border-r lg:border-panel-border">
+      <div className="flex min-h-0 flex-1 overflow-hidden lg:flex-row">
+        <main className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden lg:border-r lg:border-panel-border">
           <ChatPanel
             messages={messages}
             input={input}
@@ -229,6 +270,9 @@ export default function Home() {
           metrics={metrics}
           trace={trace}
           overmindConfigured={overmindConfigured}
+          isLoading={isLoading}
+          adsEnabled={adsEnabled}
+          onAdsEnabledChange={setAdsEnabled}
           onResetMetrics={() => void handleResetMetrics()}
           isResettingMetrics={isResettingMetrics}
         />

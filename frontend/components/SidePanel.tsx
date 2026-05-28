@@ -20,6 +20,9 @@ type SidePanelProps = {
   metrics: SessionMetrics | null;
   trace: TracePayload | null;
   overmindConfigured?: boolean;
+  isLoading?: boolean;
+  adsEnabled: boolean;
+  onAdsEnabledChange: (enabled: boolean) => void;
   onResetMetrics: () => void;
   isResettingMetrics: boolean;
 };
@@ -32,12 +35,18 @@ export default function SidePanel({
   metrics,
   trace,
   overmindConfigured = false,
+  isLoading = false,
+  adsEnabled,
+  onAdsEnabledChange,
   onResetMetrics,
   isResettingMetrics,
 }: SidePanelProps) {
+  const awaitingPlacement =
+    isLoading && adsEnabled && (intent == null || intent.ad_eligible);
+
   return (
-    <aside className="flex w-full shrink-0 flex-col gap-4 overflow-y-auto border-panel-border bg-background-muted/30 p-4 lg:w-[22rem] lg:border-l lg:p-5 xl:w-80">
-      <header className="lg:hidden">
+    <aside className="flex min-h-0 w-full shrink-0 flex-col gap-4 overflow-y-auto overscroll-y-contain border-t border-panel-border bg-background-muted/30 p-4 max-lg:max-h-[42vh] lg:h-full lg:max-h-full lg:w-[22rem] lg:border-t-0 lg:border-l lg:p-5 xl:w-80">
+      <header className="shrink-0 lg:hidden">
         <h2 className="text-sm font-semibold text-foreground">
           Pipeline & metrics
         </h2>
@@ -46,14 +55,29 @@ export default function SidePanel({
         </p>
       </header>
 
-      <IntentPanel intent={intent} focus={focus} />
+      <label className="panel-card flex shrink-0 cursor-pointer items-center justify-between gap-3 p-3">
+        <span className="text-sm text-foreground">Ads enabled</span>
+        <input
+          type="checkbox"
+          checked={adsEnabled}
+          onChange={(e) => onAdsEnabledChange(e.target.checked)}
+          disabled={isLoading}
+          className="h-5 w-5 cursor-pointer rounded border-panel-border accent-accent disabled:cursor-not-allowed"
+        />
+      </label>
 
-      <section className="panel-card p-4">
+      <IntentPanel intent={intent} focus={focus} isLoading={isLoading} />
+
+      <section className="panel-card shrink-0 p-4">
         <h2 className="panel-section-title flex items-center gap-1.5">
           <Megaphone className="h-3.5 w-3.5" aria-hidden />
           Ad placement
         </h2>
-        {ad ? (
+        {awaitingPlacement ? (
+          <p className="mt-3 text-sm text-foreground-muted" aria-live="polite">
+            Requesting placement…
+          </p>
+        ) : ad ? (
           <div className="mt-4 rounded-lg border border-accent/35 bg-accent-muted p-3.5 ring-1 ring-accent/20">
             <span className="text-xs font-semibold uppercase tracking-wider text-accent">
               Sponsored
@@ -79,6 +103,10 @@ export default function SidePanel({
               <ExternalLink className="h-3 w-3" aria-hidden />
             </a>
           </div>
+        ) : !adsEnabled ? (
+          <p className="mt-3 text-sm leading-relaxed text-foreground-muted">
+            Ads disabled — placements are skipped for this session.
+          </p>
         ) : (
           <p className="mt-3 text-sm leading-relaxed text-foreground-muted">
             {intent?.tier === "off-topic"
@@ -90,7 +118,7 @@ export default function SidePanel({
         )}
       </section>
 
-      <section className="panel-card p-4">
+      <section className="panel-card shrink-0 p-4">
         <h2 className="panel-section-title">Token usage</h2>
         {tokens != null && (tokens.input > 0 || tokens.output > 0) ? (
           <p className="mt-3 font-mono text-sm tabular-nums text-foreground">
@@ -98,6 +126,8 @@ export default function SidePanel({
             <span className="mx-2 text-panel-border">·</span>
             <span className="text-foreground-muted">Out</span> {tokens.output}
           </p>
+        ) : isLoading ? (
+          <div className="mt-3 h-4 w-32 animate-pulse rounded bg-background-muted" />
         ) : (
           <p className="mt-3 text-sm text-foreground-muted">—</p>
         )}

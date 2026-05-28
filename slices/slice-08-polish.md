@@ -12,6 +12,14 @@ Tighten the demo experience. Fast response via caching. Clean reset. Toggle cont
 
 ## Checklist
 
+### Done in branch `feat/slice-08-polish` (partial)
+- [x] Viewport scroll lock + chat/side panel independent scroll
+- [x] Tavily in-memory cache + `clear_cache()` on demo reset
+- [x] `POST /demo/reset` — metrics + Tavily cache
+- [x] Full **Reset demo** (header) — clears UI state + backend
+- [x] **Ads enabled** toggle + `ads_enabled` on `/chat`
+- [x] Loading skeleton (intent), placement message, chat status text
+
 ### Tavily Cache
 Avoid re-fetching the same query twice during the demo:
 
@@ -57,6 +65,11 @@ Prevent jarring empty → populated transitions:
 - Thrad timeout (3s) → silent no-fill, no UI error
 - Tavily empty results → Claude answers from training knowledge only
 - Claude failure → show "Response unavailable" gracefully
+
+### Viewport scroll (Slice 8a — from demo feedback)
+- Root layout locked to `h-dvh` with `overflow-hidden` so the page cannot grow past the viewport
+- Chat messages scroll inside their panel (`scrollTo` on the message container, not `scrollIntoView` on the document)
+- Side panel scrolls independently on desktop; capped height on mobile stack
 
 ### Final Checks
 - [ ] No `console.error` in browser during normal flow

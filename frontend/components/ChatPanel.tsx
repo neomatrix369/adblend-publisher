@@ -28,11 +28,19 @@ export default function ChatPanel({
   onSend,
   isLoading,
 }: ChatPanelProps) {
-  const bottomRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
   const canSend = !isLoading && input.trim().length > 0;
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    const el = scrollRef.current;
+    if (!el) return;
+    const prefersReduced =
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    el.scrollTo({
+      top: el.scrollHeight,
+      behavior: prefersReduced ? "auto" : "smooth",
+    });
   }, [messages, isLoading]);
 
   function handleSubmit(e: FormEvent) {
@@ -41,8 +49,11 @@ export default function ChatPanel({
   }
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col">
-      <div className="flex-1 overflow-y-auto px-4 py-6 md:px-6">
+    <div className="flex h-full min-h-0 flex-1 flex-col overflow-hidden">
+      <div
+        ref={scrollRef}
+        className="min-h-0 flex-1 overflow-y-auto overscroll-y-contain px-4 py-6 md:px-6"
+      >
         {messages.length === 0 ? (
           <div className="mx-auto flex max-w-md flex-col items-center justify-center py-16 text-center">
             <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-panel-border bg-background-elevated shadow-[var(--shadow-panel)]">
@@ -118,13 +129,15 @@ export default function ChatPanel({
               <li className="flex justify-start" aria-live="polite">
                 <div className="panel-card flex items-center gap-3 rounded-2xl px-4 py-3 text-sm text-foreground-muted">
                   <Spinner label="Assistant is responding" />
-                  <span className="animate-pulse-subtle">Thinking…</span>
+                  <span className="animate-pulse-subtle">
+                    Searching and composing…
+                  </span>
                 </div>
               </li>
             ) : null}
           </ul>
         )}
-        <div ref={bottomRef} className="h-px shrink-0" aria-hidden />
+        <div className="h-px shrink-0" aria-hidden />
       </div>
 
       <form

@@ -29,7 +29,7 @@ export default function RootLayout({
       lang="en"
       className={`${firaSans.variable} ${firaCode.variable} h-full antialiased`}
     >
-      <body className="h-full min-h-dvh overflow-hidden">{children}</body>
+      <body className="h-dvh max-h-dvh overflow-hidden">{children}</body>
     </html>
   );
 }
