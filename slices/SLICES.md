@@ -13,37 +13,49 @@
 ```
 User types / selects from dropdown
         ↓
-[Slice 2] Tavily → grounded context
+[Slice 2] Tavily → grounded context (cached in Slice 9 for repeat demos)
         ↓
 [Slice 5] Claude → intent score (0.0–1.0)  ← live for freeform
           golden master score              ← static for dropdown
         ↓
-score ≥ 0.7 → [Slice 3] Thrad bid → ad blended into response
-score < 0.7 → organic response only
+score ≥ 0.7 + ads on → [Slice 3] Thrad bid → ad in side panel
         ↓
-[Slice 6] Metrics panel updates
+[Slice 6] Metrics panel updates · [Slice 7] Trace spans
+        ↓
+[Slice 9] Publisher UI — layout, scroll, demo controls
 ```
 
 ---
 
 ## Slice Summary
 
-| # | Slice | Priority | Est. |
-|---|---|---|---|
-| 1 | Scaffold + Mock | Must | 30 min |
-| 2 | Tavily Grounding | Must | 25 min |
-| 3 | Thrad Intent Gate + Blend | Must | 40 min |
-| 4 | Golden Master Dropdown | Should | 25 min |
-| 5 | Live Intent + Attributes UI | Should | 25 min |
-| 6 | AdTech Metrics Panel | Should | 20 min |
-| 7 | Overmind Trace | Could | 20 min |
-| 8 | Polish + Demo Prep | Could | 15 min |
-| 9 | Frontend UI/UX Polish | Should | 45 min |
+| # | Slice | Priority | Est. | Status | Branch |
+|---|--------|----------|------|--------|--------|
+| 1 | Scaffold + Mock | Must | 30 min | done | — |
+| 2 | Tavily Grounding | Must | 25 min | done | — |
+| 3 | Thrad Intent Gate + Blend | Must | 40 min | done | `feat/slice-03-thrad-blend` |
+| 4 | Golden Master Dropdown | Should | 25 min | done | `feat/slice-04-golden-master-dropdown` |
+| 5 | Live Intent + Attributes UI | Should | 25 min | done | `feat/slice-05-intent-ui` |
+| 6 | AdTech Metrics Panel | Should | 20 min | done | `feat/slice-06-metrics-panel` |
+| 7 | Overmind Trace | Could | 20 min | done | `feat/slice-07-overmind-trace` |
+| 8 | Polish + Demo Prep (remainder) | Could | 10 min | queued | — |
+| 9 | Frontend UI/UX + Demo Polish | Should | ~60 min | **done** | `feat/slice-09-frontend-ux` |
 
 **Must Have total: ~95 min**  
-**Should Have total: ~70 min**  
-**Could Have total: ~35 min**  
-**Slice 9 (UI/UX): ~45 min** — see [`slice-09-frontend-ux.md`](slice-09-frontend-ux.md)
+**Should Have total: ~95 min** (includes slice 9)  
+**Could Have total: ~30 min** (slice 7 done; slice 8 remainder only)
+
+### Slice 8 vs 9 (plan change)
+
+Originally slice 8 covered demo polish (cache, reset, toggles, loading) and slice 9 covered visual design. **Shipped together on slice 9** so one frontend PR covers:
+
+- Design system (Fira, tokens, Lucide, panels)
+- Viewport + chat scroll behaviour
+- Tavily cache, `POST /demo/reset`, ads toggle, reset demo, loading affordances
+
+**Slice 8** now only tracks what is still open: error-state hardening and final pre-demo checklist — see [`slice-08-polish.md`](slice-08-polish.md).
+
+**Slice 9** spec: [`slice-09-frontend-ux.md`](slice-09-frontend-ux.md)
 
 ---
 
@@ -91,7 +103,7 @@ score < 0.7 → organic response only
 
 | Prize | Slice | Status |
 |---|---|---|
-| Best use of Tavily | 2 | Must ship |
-| Best use of Overmind | 7 | Only if 1–6 done |
+| Best use of Tavily | 2 (+ cache in 9) | Shipped |
+| Best use of Overmind | 7 | Shipped |
 | Best use of Alpic | — | Out of scope |
 | Best use of Cursor | All | Use Composer throughout |

@@ -11,12 +11,14 @@ Last updated: 2026-05-28
 | 5 | Live Intent + Attributes UI | **done** | Intent panel, rationale, tokens, focus chip |
 | 6 | AdTech Metrics Panel | **done** | `metrics.py`, panel + reset; `/chat` returns metrics |
 | 7 | Overmind Trace | **done** | Overmind init, trace panel, pipeline spans; branch `feat/slice-07-overmind-trace` |
-| 8 | Polish + Demo Prep | **queued** | Remaining: error states, final demo checks — partial work in slice 9 |
-| 9 | Frontend UI/UX Polish | **done** | Design system, scroll fix, demo polish; branch `feat/slice-09-frontend-ux` |
+| 8 | Polish + Demo Prep (remainder) | **queued** | Error states + final checklist only — see `slice-08-polish.md` |
+| 9 | Frontend UI/UX + Demo Polish | **done** | UI, scroll, cache, reset, ads toggle; `feat/slice-09-frontend-ux` |
 
 ## Active slice
 
-**Slice 8 — Polish + Demo Prep** (`slices/slice-08-polish.md`) — queued (remaining items only)
+**Slice 8 (remainder)** — optional before demo; merge **slice 9** first (`feat/slice-09-frontend-ux`).
+
+Plan: [`SLICES.md`](SLICES.md) · Slice 9 spec: [`slice-09-frontend-ux.md`](slice-09-frontend-ux.md)
 
 ## Slice 9 completed
 

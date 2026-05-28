@@ -1,14 +1,15 @@
-# Slice 9 — Frontend UI/UX Polish
-**Priority:** Should Have | **Est:** 45 min  
-**Depends on:** Slices 1–7 (panels and chat flow in place)
+# Slice 9 — Frontend UI/UX + Demo Polish
+**Priority:** Should Have | **Est:** ~60 min  
+**Depends on:** Slices 1–7 (panels and chat flow in place)  
+**Status:** **done** · Branch: `feat/slice-09-frontend-ux`
 
 ---
 
 ## Goal
 
-Apply a cohesive dark dashboard design system to the publisher demo UI: professional typography, semantic tokens, accessible interactions, SVG status icons (no emoji), loading/empty states, and a responsive layout that works on tablet and desktop.
+Ship a judge-ready publisher console: cohesive dark dashboard UI **and** demo controls (reset, ads toggle, scroll, cache) in one vertical slice.
 
-Design direction sourced from **UI/UX Pro Max** (`--design-system` for SaaS ad-tech analytics dashboard).
+Design direction: **UI/UX Pro Max** (`--design-system` for SaaS ad-tech analytics dashboard).
 
 ---
 
@@ -22,27 +23,38 @@ Design direction sourced from **UI/UX Pro Max** (`--design-system` for SaaS ad-t
 ### Typography (`frontend/app/layout.tsx`)
 - **Fira Sans** (UI) + **Fira Code** (metrics/trace) via `next/font/google`
 
-### Components
+### Components (visual)
 | File | Changes |
 |------|---------|
-| `page.tsx` | Header with logo mark, API Live/Offline pill; single primary CTA in chat; responsive stack |
-| `ChatPanel.tsx` | Empty state, message bubbles, typing indicator + spinner |
-| `Dropdown.tsx` | Text tier labels (no emoji); chevron affordance; load error alert |
-| `IntentPanel.tsx` | Lucide gate icons, score progressbar a11y |
-| `SidePanel.tsx` | Panel cards, ad placement block, mobile section intro |
-| `MetricsPanel.tsx` | Reset with spinner, clearer metric rows |
-| `TracePanel.tsx` | Overmind/local badge, gradient latency bars |
+| `page.tsx` | Header with logo mark, API Live/Offline pill, reset demo; responsive stack |
+| `ChatPanel.tsx` | Empty state, bubbles, spinner, scroll behaviour |
+| `Dropdown.tsx` | Text tier labels (no emoji); chevron; load error alert |
+| `IntentPanel.tsx` | Lucide gate icons, score bar, loading skeleton |
+| `SidePanel.tsx` | Panel cards, ads toggle, ad placement block |
+| `MetricsPanel.tsx` | Reset with spinner, clearer rows |
+| `TracePanel.tsx` | Overmind/local badge, latency bars |
 | `lib/tier-styles.ts` | Shared tier labels and badge colours |
 | `components/ui/Spinner.tsx` | Reusable loading indicator |
+
+### Backend (demo polish — absorbed from slice 8 plan)
+| File | Changes |
+|------|---------|
+| `tavily_client.py` | In-memory query cache + `clear_cache()` |
+| `main.py` | `POST /demo/reset`; `ads_enabled` on `ChatRequest` |
+| `tests/test_tavily_cache.py` | Cache hit behaviour |
 
 ### Dependency
 - `lucide-react` for SVG icons
 
-### Scroll & demo polish (follow-up on same branch)
+### Scroll behaviour
 - Root `h-dvh overflow-hidden`; chat and side panel scroll independently
-- Long replies: `scrollIntoView({ block: "start" })` on latest assistant message
-- Tavily in-memory cache; `POST /demo/reset`; **Reset demo** + **Ads enabled** toggle
-- Intent skeleton, placement loading copy
+- Long replies: `useLayoutEffect` + `scrollIntoView({ block: "start" })` on latest assistant message
+- User messages / loading: scroll pane to bottom
+
+### Demo controls
+- **Reset demo** (header) → clears UI + `POST /demo/reset`
+- **Ads enabled** toggle → `ads_enabled` on `/chat`
+- Metrics **Reset** (session only) unchanged
 
 ---
 
@@ -50,10 +62,11 @@ Design direction sourced from **UI/UX Pro Max** (`--design-system` for SaaS ad-t
 
 - [x] No emojis used as UI icons (dropdown tiers, intent gate)
 - [x] Visible focus states and 44px+ touch targets on primary controls
-- [x] Loading feedback in chat (spinner + “Thinking…”)
+- [x] Loading feedback in chat and intent panel
 - [x] Helpful empty states in chat and side panels
-- [x] Side panel scrolls independently on `lg+`; stacks below chat on small screens
+- [x] Side panel scrolls independently on `lg+`; capped height when stacked on mobile
 - [x] Long chat replies do not push side panel off-screen; reply starts at top of scroll area
+- [x] Tavily cache, demo reset, ads toggle
 - [x] `npm run build` and `npm run lint` pass
 
 ---
@@ -62,11 +75,22 @@ Design direction sourced from **UI/UX Pro Max** (`--design-system` for SaaS ad-t
 
 ```bash
 cd frontend && npm run lint && npm run build
-npm run dev   # manual: check header API pill, chat empty state, one full query
+cd ../backend && python3 -m pytest tests/test_tavily_cache.py  # when pytest available
+npm run dev   # manual: reset demo, ads toggle, long dropdown answer, side panel stays visible
 ```
+
+---
+
+## Commits (slice 9 branch)
+
+1. `feat(slice-09): polish publisher UI with design system and a11y`
+2. `docs(slice-09): record frontend UX slice as done in PROGRESS`
+3. `feat(slice-09): fix viewport scroll and demo polish`
+4. `fix(slice-09): scroll to top of long assistant replies`
+5. `docs(slice-09): align slice docs after moving polish commits`
 
 ---
 
 ## Branch
 
-`feat/slice-09-frontend-ux`
+`feat/slice-09-frontend-ux` — merge to `main` as single PR for all frontend + related backend demo endpoints.
