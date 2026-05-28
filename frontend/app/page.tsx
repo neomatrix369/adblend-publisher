@@ -1,16 +1,19 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import ChatPanel, { type Message } from "@/components/ChatPanel";
 import Dropdown from "@/components/Dropdown";
 import SidePanel from "@/components/SidePanel";
 import {
   postChat,
+  postMetricsReset,
   type AdPayload,
   type DatasetEntry,
   type FocusPayload,
   type IntentPayload,
+  type SessionMetrics,
   type TokenUsage,
+  type TracePayload,
 } from "@/lib/api";
 
 export default function Home() {
@@ -23,6 +26,10 @@ export default function Home() {
   const [focus, setFocus] = useState<FocusPayload | null>(null);
   const [ad, setAd] = useState<AdPayload | null>(null);
   const [tokens, setTokens] = useState<TokenUsage | null>(null);
+  const [metrics, setMetrics] = useState<SessionMetrics | null>(null);
+  const [trace, setTrace] = useState<TracePayload | null>(null);
+  const [overmindConfigured, setOvermindConfigured] = useState(false);
+  const [isResettingMetrics, setIsResettingMetrics] = useState(false);
 
   const handleInputChange = useCallback(
     (value: string) => {
@@ -78,6 +85,12 @@ export default function Home() {
       setFocus(data.focus);
       setAd(data.ad);
       setTokens(data.tokens);
+      if (data.metrics) {
+        setMetrics(data.metrics);
+      }
+      if (data.trace) {
+        setTrace(data.trace);
+      }
       setMessages((prev) => [
         ...prev,
         {
@@ -101,6 +114,38 @@ export default function Home() {
       setIsLoading(false);
     }
   }, [input, isLoading, selectedEntry]);
+
+  const handleResetMetrics = useCallback(async () => {
+    if (isResettingMetrics) return;
+    setIsResettingMetrics(true);
+    try {
+      const cleared = await postMetricsReset();
+      setMetrics(cleared);
+    } catch {
+      setMetrics({
+        total_queries: 0,
+        ads_served: 0,
+        no_fill: 0,
+        blocked: 0,
+        fill_rate: 0,
+        last_impression: null,
+      });
+    } finally {
+      setIsResettingMetrics(false);
+    }
+  }, [isResettingMetrics]);
+
+  useEffect(() => {
+    const base = (process.env.NEXT_PUBLIC_API_URL ?? "/api").replace(/\/$/, "");
+    void fetch(`${base}/health`)
+      .then((res) => res.json())
+      .then((body: { overmind_configured?: boolean }) => {
+        setOvermindConfigured(Boolean(body.overmind_configured));
+      })
+      .catch(() => {
+        setOvermindConfigured(false);
+      });
+  }, []);
 
   return (
     <div className="flex h-screen flex-col bg-background text-foreground">
@@ -133,7 +178,17 @@ export default function Home() {
             isLoading={isLoading}
           />
         </main>
-        <SidePanel intent={intent} focus={focus} ad={ad} tokens={tokens} />
+        <SidePanel
+          intent={intent}
+          focus={focus}
+          ad={ad}
+          tokens={tokens}
+          metrics={metrics}
+          trace={trace}
+          overmindConfigured={overmindConfigured}
+          onResetMetrics={() => void handleResetMetrics()}
+          isResettingMetrics={isResettingMetrics}
+        />
       </div>
     </div>
   );

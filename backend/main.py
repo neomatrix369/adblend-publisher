@@ -19,10 +19,15 @@ from pydantic import BaseModel, Field
 
 from claude_client import generate_response
 from intent import INTENT_GATE_THRESHOLD, score_intent
+from metrics import metrics as session_metrics
+from overmind_setup import init_overmind, is_overmind_configured
 from thrad_client import request_ad
 from tavily_client import search as tavily_search
+from trace_collector import TraceCollector, request_trace_root
 
 logger = logging.getLogger(__name__)
+
+init_overmind()
 
 app = FastAPI(title="AdBlend Publisher API")
 
@@ -77,6 +82,33 @@ class AdPayload(BaseModel):
     mock: bool = True
 
 
+class LastImpressionPayload(BaseModel):
+    state: Literal["logged", "no_fill", "none"]
+    tier: str
+    score: float
+    bid_won: bool
+
+
+class SessionMetricsPayload(BaseModel):
+    total_queries: int
+    ads_served: int
+    no_fill: int
+    blocked: int
+    fill_rate: float
+    last_impression: LastImpressionPayload | None = None
+
+
+class TraceCallPayload(BaseModel):
+    name: str
+    latency_ms: float
+
+
+class TracePayload(BaseModel):
+    span_count: int
+    total_latency_ms: float
+    calls: list[TraceCallPayload] = Field(default_factory=list)
+
+
 class ChatResponse(BaseModel):
     response: str
     sources: list[TavilySource] = Field(default_factory=list)
@@ -84,7 +116,8 @@ class ChatResponse(BaseModel):
     ad: AdPayload | None = None
     focus: Focus | None = None
     tokens: TokenUsage | None = None
-    metrics: None = None
+    metrics: SessionMetricsPayload | None = None
+    trace: TracePayload | None = None
 
 
 def _format_context(sources: list[dict[str, Any]]) -> str:
@@ -132,12 +165,10 @@ async def get_dataset():
         return json.load(f)
 
 
-@app.get("/dataset")
-async def get_dataset():
-    if not _GOLDEN_DATASET_PATH.is_file():
-        raise HTTPException(status_code=404, detail="Golden dataset not found")
-    with _GOLDEN_DATASET_PATH.open(encoding="utf-8") as f:
-        return json.load(f)
+@app.post("/metrics/reset")
+async def reset_metrics():
+    session_metrics.reset()
+    return session_metrics.to_dict()
 
 
 @app.get("/health")
@@ -148,19 +179,38 @@ async def health():
         "anthropic_configured": bool(os.getenv("ANTHROPIC_API_KEY")),
         "thrad_mode": "mock",
         "intent_gate_threshold": INTENT_GATE_THRESHOLD,
+        "overmind_configured": is_overmind_configured(),
     }
 
 
 @app.post("/chat", response_model=ChatResponse)
 async def chat(req: ChatRequest):
+    trace = TraceCollector()
     try:
-        sources = await asyncio.to_thread(tavily_search, req.message)
-        context = _format_context(sources)
-        response_text, chat_tokens = await asyncio.to_thread(
-            generate_response, req.message, context
-        )
-        intent, focus, intent_tokens = await asyncio.to_thread(_resolve_intent, req)
-        tokens = _merge_tokens(TokenUsage(**chat_tokens), intent_tokens)
+        with request_trace_root():
+            with trace.record("tavily.search"):
+                sources = await asyncio.to_thread(tavily_search, req.message)
+            context = _format_context(sources)
+
+            with trace.record("claude.respond"):
+                response_text, chat_tokens = await asyncio.to_thread(
+                    generate_response, req.message, context
+                )
+
+            use_live_intent = not (
+                req.source == "dropdown" and req.intent is not None
+            )
+            if use_live_intent:
+                with trace.record("claude.intent"):
+                    intent, focus, intent_tokens = await asyncio.to_thread(
+                        _resolve_intent, req
+                    )
+            else:
+                intent, focus, intent_tokens = await asyncio.to_thread(
+                    _resolve_intent, req
+                )
+
+            tokens = _merge_tokens(TokenUsage(**chat_tokens), intent_tokens)
     except ValueError as exc:
         raise HTTPException(
             status_code=503,
@@ -184,6 +234,18 @@ async def chat(req: ChatRequest):
 
     ad = AdPayload(**ad_data) if ad_data else None
 
+    thrad_called = intent.score >= INTENT_GATE_THRESHOLD
+    ad_served = ad is not None
+    session_metrics.record(
+        intent_tier=intent.tier,
+        intent_score=intent.score,
+        ad_served=ad_served,
+        thrad_called=thrad_called,
+    )
+    metrics_payload = SessionMetricsPayload(**session_metrics.to_dict())
+
+    trace_payload = TracePayload(**trace.to_dict())
+
     return ChatResponse(
         response=response_text,
         sources=[TavilySource(**s) for s in sources],
@@ -191,4 +253,6 @@ async def chat(req: ChatRequest):
         ad=ad,
         focus=focus,
         tokens=tokens,
+        metrics=metrics_payload,
+        trace=trace_payload,
     )
