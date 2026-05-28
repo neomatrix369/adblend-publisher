@@ -192,11 +192,6 @@ async def chat(req: ChatRequest):
                 sources = await asyncio.to_thread(tavily_search, req.message)
             context = _format_context(sources)
 
-            with trace.record("claude.respond"):
-                response_text, chat_tokens = await asyncio.to_thread(
-                    generate_response, req.message, context
-                )
-
             use_live_intent = not (
                 req.source == "dropdown" and req.intent is not None
             )
@@ -208,6 +203,11 @@ async def chat(req: ChatRequest):
             else:
                 intent, focus, intent_tokens = await asyncio.to_thread(
                     _resolve_intent, req
+                )
+
+            with trace.record("claude.respond"):
+                response_text, chat_tokens = await asyncio.to_thread(
+                    generate_response, req.message, context
                 )
 
             tokens = _merge_tokens(TokenUsage(**chat_tokens), intent_tokens)
@@ -225,12 +225,13 @@ async def chat(req: ChatRequest):
 
     ad_data: dict[str, Any] | None = None
     if intent.score >= INTENT_GATE_THRESHOLD:
-        ad_data = await asyncio.to_thread(
-            request_ad,
-            req.message,
-            focus.model_dump(),
-            intent.score,
-        )
+        with trace.record("thrad.bid"):
+            ad_data = await asyncio.to_thread(
+                request_ad,
+                req.message,
+                focus.model_dump(),
+                intent.score,
+            )
 
     ad = AdPayload(**ad_data) if ad_data else None
 
