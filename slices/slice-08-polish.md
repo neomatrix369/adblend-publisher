@@ -6,7 +6,7 @@
 
 ## Goal
 
-Close remaining demo rough edges **not** already delivered in slice 9: resilient error paths and a quick pre-judge checklist.
+Close remaining demo rough edges **not** already delivered in slice 9: resilient error paths and a quick pre-demo checklist.
 
 ---
 

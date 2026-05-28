@@ -43,7 +43,11 @@ export default function SidePanel({
   isResettingMetrics,
 }: SidePanelProps) {
   return (
-    <aside className="flex min-h-0 w-full shrink-0 flex-col overflow-y-auto overscroll-y-contain border-t border-panel-border bg-[linear-gradient(180deg,rgb(20_28_46/0.95)_0%,rgb(15_23_42/1)_12rem)] p-4 max-lg:max-h-[42vh] lg:h-full lg:max-h-full lg:w-[24rem] lg:border-t-0 lg:border-l lg:p-5 xl:w-[26rem]">
+    <div
+      role="complementary"
+      aria-label="Publisher impact metrics"
+      className="flex h-full min-h-0 w-full flex-col overflow-y-auto overscroll-y-contain border-t border-panel-border bg-[linear-gradient(180deg,rgb(20_28_46/0.95)_0%,rgb(15_23_42/1)_12rem)] p-4 max-lg:max-h-[42vh] lg:border-t-0 lg:p-5"
+    >
       <header className="shrink-0 border-b border-panel-border/50 pb-4">
         <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-accent">
           Publisher impact
@@ -52,7 +56,7 @@ export default function SidePanel({
           Intent → placement → revenue
         </h2>
         <p className="mt-1 text-xs leading-relaxed text-foreground-muted">
-          The story judges care about: score traffic, gate ads, measure fill.
+          Score traffic, gate ads, and measure fill — the publisher value chain.
         </p>
       </header>
 
@@ -120,6 +124,6 @@ export default function SidePanel({
           />
         </div>
       </details>
-    </aside>
+    </div>
   );
 }

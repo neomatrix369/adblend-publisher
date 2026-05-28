@@ -7,7 +7,7 @@
 
 ## Goal
 
-Ship a judge-ready publisher console: cohesive dark dashboard UI **and** demo controls (reset, ads toggle, scroll, cache) in one vertical slice.
+Ship a demo-ready publisher console: cohesive dark dashboard UI **and** demo controls (reset, ads toggle, scroll, cache) in one vertical slice.
 
 Design direction: **UI/UX Pro Max** (`--design-system` for SaaS ad-tech analytics dashboard).
 

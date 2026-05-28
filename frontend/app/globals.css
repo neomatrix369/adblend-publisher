@@ -225,3 +225,33 @@ body {
 .animate-pulse-subtle {
   animation: pulse-subtle 1.4s ease-in-out infinite;
 }
+
+.split-handle {
+  position: relative;
+  width: 6px;
+  cursor: col-resize;
+  touch-action: none;
+  background: transparent;
+  transition: background var(--transition-fast);
+}
+
+.split-handle::after {
+  content: "";
+  position: absolute;
+  inset: 0.75rem 2px;
+  border-radius: 999px;
+  background: var(--panel-border);
+  transition:
+    background var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.split-handle:hover::after,
+.split-handle:focus-visible::after {
+  background: var(--accent);
+  box-shadow: 0 0 12px rgb(249 115 22 / 0.35);
+}
+
+.split-handle:focus-visible {
+  outline: none;
+}

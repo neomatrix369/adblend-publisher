@@ -72,7 +72,7 @@ export default function AdPlacementPanel({
             Ads disabled for demo
           </p>
           <p className="text-xs text-foreground-muted">
-            Re-enable above to show the contrast for judges.
+            Re-enable above to compare with sponsored placement.
           </p>
         </div>
       ) : (

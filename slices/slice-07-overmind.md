@@ -7,7 +7,7 @@
 
 ## Goal
 
-Add Overmind tracing to auto-instrument all Claude and Tavily calls. Show a live trace summary in the UI. Targets the Overmind bonus prize — judges want to see Overmind doing real work, not a throwaway badge.
+Add Overmind tracing to auto-instrument all Claude and Tavily calls. Show a live trace summary in the UI. Targets the Overmind bonus prize — show Overmind doing real work on the pipeline, not a throwaway badge.
 
 ---
 

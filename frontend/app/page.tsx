@@ -5,6 +5,7 @@ import { Radio } from "lucide-react";
 
 import ChatPanel, { type Message } from "@/components/ChatPanel";
 import Dropdown from "@/components/Dropdown";
+import ResizableSplitPane from "@/components/ResizableSplitPane";
 import SidePanel from "@/components/SidePanel";
 import {
   postChat,
@@ -252,8 +253,8 @@ export default function Home() {
         </div>
       </header>
 
-      <div className="flex min-h-0 flex-1 overflow-hidden lg:flex-row">
-        <main className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden lg:border-r lg:border-panel-border">
+      <ResizableSplitPane
+        main={
           <ChatPanel
             messages={messages}
             input={input}
@@ -261,22 +262,24 @@ export default function Home() {
             onSend={() => void sendMessage()}
             isLoading={isLoading}
           />
-        </main>
-        <SidePanel
-          intent={intent}
-          focus={focus}
-          ad={ad}
-          tokens={tokens}
-          metrics={metrics}
-          trace={trace}
-          overmindConfigured={overmindConfigured}
-          isLoading={isLoading}
-          adsEnabled={adsEnabled}
-          onAdsEnabledChange={setAdsEnabled}
-          onResetMetrics={() => void handleResetMetrics()}
-          isResettingMetrics={isResettingMetrics}
-        />
-      </div>
+        }
+        side={
+          <SidePanel
+            intent={intent}
+            focus={focus}
+            ad={ad}
+            tokens={tokens}
+            metrics={metrics}
+            trace={trace}
+            overmindConfigured={overmindConfigured}
+            isLoading={isLoading}
+            adsEnabled={adsEnabled}
+            onAdsEnabledChange={setAdsEnabled}
+            onResetMetrics={() => void handleResetMetrics()}
+            isResettingMetrics={isResettingMetrics}
+          />
+        }
+      />
     </div>
   );
 }
