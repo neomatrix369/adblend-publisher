@@ -47,6 +47,12 @@ class IntentPayload(BaseModel):
     score: float
     tier: str
     ad_eligible: bool = False
+    rationale: str | None = None
+
+
+class TokenUsage(BaseModel):
+    input: int = 0
+    output: int = 0
 
 
 class ChatRequest(BaseModel):
@@ -77,6 +83,7 @@ class ChatResponse(BaseModel):
     intent: IntentPayload | None = None
     ad: AdPayload | None = None
     focus: Focus | None = None
+    tokens: TokenUsage | None = None
     metrics: None = None
 
 
@@ -88,23 +95,41 @@ def _format_context(sources: list[dict[str, Any]]) -> str:
     )
 
 
-def _resolve_intent(req: ChatRequest) -> tuple[IntentPayload, Focus]:
+def _resolve_intent(
+    req: ChatRequest,
+) -> tuple[IntentPayload, Focus, TokenUsage]:
     if req.source == "dropdown" and req.intent is not None:
         intent = req.intent
         focus = req.focus or Focus()
-        return intent, focus
+        return intent, focus, TokenUsage()
 
-    scored = score_intent(req.message)
+    scored, intent_tokens = score_intent(req.message)
     intent = IntentPayload(
         score=float(scored["score"]),
         tier=str(scored["tier"]),
         ad_eligible=bool(scored["ad_eligible"]),
+        rationale=str(scored.get("rationale") or "") or None,
     )
     focus = req.focus or Focus(
         category=str(scored.get("category") or ""),
         sub_category=str(scored.get("sub_category") or ""),
     )
-    return intent, focus
+    return intent, focus, TokenUsage(**intent_tokens)
+
+
+def _merge_tokens(*parts: TokenUsage) -> TokenUsage:
+    return TokenUsage(
+        input=sum(p.input for p in parts),
+        output=sum(p.output for p in parts),
+    )
+
+
+@app.get("/dataset")
+async def get_dataset():
+    if not _GOLDEN_DATASET_PATH.is_file():
+        raise HTTPException(status_code=404, detail="Golden dataset not found")
+    with _GOLDEN_DATASET_PATH.open(encoding="utf-8") as f:
+        return json.load(f)
 
 
 @app.get("/dataset")
@@ -131,10 +156,11 @@ async def chat(req: ChatRequest):
     try:
         sources = await asyncio.to_thread(tavily_search, req.message)
         context = _format_context(sources)
-        response_text = await asyncio.to_thread(
+        response_text, chat_tokens = await asyncio.to_thread(
             generate_response, req.message, context
         )
-        intent, focus = await asyncio.to_thread(_resolve_intent, req)
+        intent, focus, intent_tokens = await asyncio.to_thread(_resolve_intent, req)
+        tokens = _merge_tokens(TokenUsage(**chat_tokens), intent_tokens)
     except ValueError as exc:
         raise HTTPException(
             status_code=503,
@@ -164,4 +190,5 @@ async def chat(req: ChatRequest):
         intent=intent,
         ad=ad,
         focus=focus,
+        tokens=tokens,
     )

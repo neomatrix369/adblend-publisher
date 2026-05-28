@@ -1,4 +1,5 @@
 import os
+from typing import TypedDict
 
 import anthropic
 
@@ -12,7 +13,12 @@ SYSTEM_PROMPT = (
 DEFAULT_MODEL = "claude-sonnet-4-20250514"
 
 
-def generate_response(user_message: str, context: str) -> str:
+class TokenUsage(TypedDict):
+    input: int
+    output: int
+
+
+def generate_response(user_message: str, context: str) -> tuple[str, TokenUsage]:
     api_key = os.getenv("ANTHROPIC_API_KEY")
     if not api_key:
         raise ValueError("ANTHROPIC_API_KEY is not set")
@@ -27,7 +33,12 @@ def generate_response(user_message: str, context: str) -> str:
         messages=[{"role": "user", "content": user_content}],
     )
 
+    tokens: TokenUsage = {
+        "input": message.usage.input_tokens,
+        "output": message.usage.output_tokens,
+    }
+
     for block in message.content:
         if block.type == "text":
-            return block.text
-    return ""
+            return block.text, tokens
+    return "", tokens

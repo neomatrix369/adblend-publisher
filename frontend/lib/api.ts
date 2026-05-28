@@ -15,6 +15,12 @@ export type IntentPayload = {
   score: number;
   tier: string;
   ad_eligible: boolean;
+  rationale?: string | null;
+};
+
+export type TokenUsage = {
+  input: number;
+  output: number;
 };
 
 export type FocusPayload = {
@@ -37,6 +43,7 @@ export type ChatResponse = {
   intent: IntentPayload | null;
   ad: AdPayload | null;
   focus: FocusPayload | null;
+  tokens: TokenUsage | null;
   metrics: null;
 };
 

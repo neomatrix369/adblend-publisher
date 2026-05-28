@@ -2,12 +2,13 @@
 
 import { FormEvent, useRef, useEffect } from "react";
 
-import type { TavilySource } from "@/lib/api";
+import type { TavilySource, TokenUsage } from "@/lib/api";
 
 export type Message = {
   role: "user" | "assistant";
   content: string;
   sources?: TavilySource[];
+  tokens?: TokenUsage;
 };
 
 type ChatPanelProps = {
@@ -60,28 +61,39 @@ export default function ChatPanel({
             >
               {msg.content}
             </div>
-            {msg.role === "assistant" && msg.sources && msg.sources.length > 0 && (
+            {msg.role === "assistant" &&
+              (msg.sources?.length || msg.tokens) ? (
               <div className="mt-2 space-y-1">
-                <p className="text-xs text-text-muted">
-                  Powered by{" "}
-                  <span className="text-accent">Tavily</span>
-                </p>
-                <ul className="space-y-1 text-xs text-text-muted">
-                  {msg.sources.map((source) => (
-                    <li key={source.url}>
-                      <a
-                        href={source.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-accent/90 hover:text-accent hover:underline"
-                      >
-                        {source.title || source.url}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
+                {msg.sources && msg.sources.length > 0 ? (
+                  <>
+                    <p className="text-xs text-text-muted">
+                      Powered by{" "}
+                      <span className="text-accent">Tavily</span>
+                    </p>
+                    <ul className="space-y-1 text-xs text-text-muted">
+                      {msg.sources.map((source) => (
+                        <li key={source.url}>
+                          <a
+                            href={source.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-accent/90 hover:text-accent hover:underline"
+                          >
+                            {source.title || source.url}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                ) : null}
+                {msg.tokens &&
+                (msg.tokens.input > 0 || msg.tokens.output > 0) ? (
+                  <p className="text-xs text-gray-600">
+                    {msg.tokens.input} in · {msg.tokens.output} out
+                  </p>
+                ) : null}
               </div>
-            )}
+            ) : null}
           </div>
         ))}
         <div ref={bottomRef} />

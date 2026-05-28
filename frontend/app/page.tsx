@@ -10,6 +10,7 @@ import {
   type DatasetEntry,
   type FocusPayload,
   type IntentPayload,
+  type TokenUsage,
 } from "@/lib/api";
 
 export default function Home() {
@@ -21,6 +22,7 @@ export default function Home() {
   const [intent, setIntent] = useState<IntentPayload | null>(null);
   const [focus, setFocus] = useState<FocusPayload | null>(null);
   const [ad, setAd] = useState<AdPayload | null>(null);
+  const [tokens, setTokens] = useState<TokenUsage | null>(null);
 
   const handleInputChange = useCallback(
     (value: string) => {
@@ -66,6 +68,7 @@ export default function Home() {
                 score: selectedEntry.intent.score,
                 tier: selectedEntry.intent.tier,
                 ad_eligible: selectedEntry.intent.ad_eligible,
+                rationale: selectedEntry.intent.rationale ?? null,
               },
               focus: selectedEntry.focus,
             }
@@ -74,12 +77,14 @@ export default function Home() {
       setIntent(data.intent);
       setFocus(data.focus);
       setAd(data.ad);
+      setTokens(data.tokens);
       setMessages((prev) => [
         ...prev,
         {
           role: "assistant",
           content: data.response,
           sources: data.sources?.length ? data.sources : undefined,
+          tokens: data.tokens ?? undefined,
         },
       ]);
     } catch (err) {
@@ -128,7 +133,7 @@ export default function Home() {
             isLoading={isLoading}
           />
         </main>
-        <SidePanel intent={intent} focus={focus} ad={ad} />
+        <SidePanel intent={intent} focus={focus} ad={ad} tokens={tokens} />
       </div>
     </div>
   );
