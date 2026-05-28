@@ -23,6 +23,7 @@ Return ONLY JSON:
 }
 Use persona ids from the publisher dataset when obvious
 (e.g. current-student, software-engineer, ad-publisher).
+For AdTech replies use category "AdTech" (not "advertising") when applicable.
 Categories should reflect the reply's actual topic."""
 
 
