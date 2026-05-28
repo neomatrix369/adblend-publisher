@@ -1,10 +1,61 @@
 "use client";
 
-import { FormEvent, useLayoutEffect, useRef } from "react";
-import { MessageSquare, Send } from "lucide-react";
+import { FormEvent, useCallback, useLayoutEffect, useRef, useState } from "react";
+import { ChevronDown, ChevronUp, MessageSquare, Send } from "lucide-react";
 
 import Spinner from "@/components/ui/Spinner";
 import type { TavilySource, TokenUsage } from "@/lib/api";
+
+const COLLAPSE_CHAR_THRESHOLD = 320;
+const COLLAPSE_LINE_THRESHOLD = 6;
+
+function isLongAnswer(content: string): boolean {
+  if (content.length > COLLAPSE_CHAR_THRESHOLD) return true;
+  return content.split("\n").length > COLLAPSE_LINE_THRESHOLD;
+}
+
+type CollapsibleAnswerProps = {
+  content: string;
+  expanded: boolean;
+  onToggle: () => void;
+};
+
+function CollapsibleAnswer({
+  content,
+  expanded,
+  onToggle,
+}: CollapsibleAnswerProps) {
+  const long = isLongAnswer(content);
+  const collapsed = long && !expanded;
+
+  return (
+    <>
+      <div className={collapsed ? "max-h-[8.5rem] overflow-hidden" : undefined}>
+        <p className="whitespace-pre-wrap">{content}</p>
+      </div>
+      {long ? (
+        <button
+          type="button"
+          onClick={onToggle}
+          className="mt-3 inline-flex w-full min-h-[2.25rem] cursor-pointer items-center justify-center gap-1.5 rounded-lg border border-accent/40 bg-accent-muted/50 px-3 py-2 text-sm font-semibold text-accent shadow-[0_1px_0_rgb(248_250_252/0.04)_inset] transition-colors hover:border-accent/60 hover:bg-accent-muted hover:text-accent-hover focus-visible:rounded-lg"
+          aria-expanded={expanded}
+        >
+          {expanded ? (
+            <>
+              <ChevronUp className="h-4 w-4 shrink-0" aria-hidden />
+              Show less
+            </>
+          ) : (
+            <>
+              <ChevronDown className="h-4 w-4 shrink-0" aria-hidden />
+              Show more
+            </>
+          )}
+        </button>
+      ) : null}
+    </>
+  );
+}
 
 export type Message = {
   role: "user" | "assistant";
@@ -30,7 +81,22 @@ export default function ChatPanel({
 }: ChatPanelProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const lastMessageRef = useRef<HTMLLIElement>(null);
+  const [expandedAnswers, setExpandedAnswers] = useState<Set<number>>(
+    () => new Set(),
+  );
   const canSend = !isLoading && input.trim().length > 0;
+
+  const toggleAnswerExpanded = useCallback((index: number) => {
+    setExpandedAnswers((prev) => {
+      const next = new Set(prev);
+      if (next.has(index)) {
+        next.delete(index);
+      } else {
+        next.add(index);
+      }
+      return next;
+    });
+  }, []);
 
   // Run after layout so scrollHeight is correct; avoid smooth scroll on tall replies.
   useLayoutEffect(() => {
@@ -99,7 +165,15 @@ export default function ChatPanel({
                       : "panel-card text-foreground"
                   }`}
                 >
-                  <p className="whitespace-pre-wrap">{msg.content}</p>
+                  {msg.role === "assistant" ? (
+                    <CollapsibleAnswer
+                      content={msg.content}
+                      expanded={expandedAnswers.has(i)}
+                      onToggle={() => toggleAnswerExpanded(i)}
+                    />
+                  ) : (
+                    <p className="whitespace-pre-wrap">{msg.content}</p>
+                  )}
                   {msg.role === "assistant" &&
                   (msg.sources?.length || msg.tokens) ? (
                     <footer className="mt-3 space-y-2 border-t border-panel-border/80 pt-3">
