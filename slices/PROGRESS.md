@@ -11,12 +11,12 @@ Last updated: 2026-05-28
 | 5 | Live Intent + Attributes UI | **done** | Intent panel, rationale, tokens, focus chip |
 | 6 | AdTech Metrics Panel | **done** | `metrics.py`, panel + reset; `/chat` returns metrics |
 | 7 | Overmind Trace | **done** | Overmind init, trace panel, pipeline spans; branch `feat/slice-07-overmind-trace` |
-| 8 | Polish + Demo Prep | **in progress** | Scroll fix, Tavily cache, demo reset, ad toggle; branch `feat/slice-08-polish` |
-| 9 | Frontend UI/UX Polish | **done** | Design system, Lucide icons, a11y, responsive layout; branch `feat/slice-09-frontend-ux` |
+| 8 | Polish + Demo Prep | **queued** | Remaining: error states, final demo checks — partial work in slice 9 |
+| 9 | Frontend UI/UX Polish | **done** | Design system, scroll fix, demo polish; branch `feat/slice-09-frontend-ux` |
 
 ## Active slice
 
-**Slice 8 — Polish + Demo Prep** (`slices/slice-08-polish.md`) — in progress
+**Slice 8 — Polish + Demo Prep** (`slices/slice-08-polish.md`) — queued (remaining items only)
 
 ## Slice 9 completed
 
@@ -24,6 +24,8 @@ Last updated: 2026-05-28
 - `layout.tsx` — Fira Sans + Fira Code
 - Chat, dropdown, intent/metrics/trace/side panels — UI/UX Pro Max polish
 - `lucide-react`; `lib/tier-styles.ts`; `components/ui/Spinner.tsx`
+- Viewport scroll lock; chat scroll shows top of long assistant replies
+- Tavily cache, `POST /demo/reset`, ads toggle, reset demo button, loading skeletons
 - Branch: `feat/slice-09-frontend-ux`
 
 ## Slice 7 completed

@@ -38,6 +38,12 @@ Design direction sourced from **UI/UX Pro Max** (`--design-system` for SaaS ad-t
 ### Dependency
 - `lucide-react` for SVG icons
 
+### Scroll & demo polish (follow-up on same branch)
+- Root `h-dvh overflow-hidden`; chat and side panel scroll independently
+- Long replies: `scrollIntoView({ block: "start" })` on latest assistant message
+- Tavily in-memory cache; `POST /demo/reset`; **Reset demo** + **Ads enabled** toggle
+- Intent skeleton, placement loading copy
+
 ---
 
 ## Exit criteria
@@ -47,6 +53,7 @@ Design direction sourced from **UI/UX Pro Max** (`--design-system` for SaaS ad-t
 - [x] Loading feedback in chat (spinner + “Thinking…”)
 - [x] Helpful empty states in chat and side panels
 - [x] Side panel scrolls independently on `lg+`; stacks below chat on small screens
+- [x] Long chat replies do not push side panel off-screen; reply starts at top of scroll area
 - [x] `npm run build` and `npm run lint` pass
 
 ---

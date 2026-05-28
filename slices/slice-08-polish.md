@@ -12,13 +12,8 @@ Tighten the demo experience. Fast response via caching. Clean reset. Toggle cont
 
 ## Checklist
 
-### Done in branch `feat/slice-08-polish` (partial)
-- [x] Viewport scroll lock + chat/side panel independent scroll
-- [x] Tavily in-memory cache + `clear_cache()` on demo reset
-- [x] `POST /demo/reset` — metrics + Tavily cache
-- [x] Full **Reset demo** (header) — clears UI state + backend
-- [x] **Ads enabled** toggle + `ads_enabled` on `/chat`
-- [x] Loading skeleton (intent), placement message, chat status text
+### Moved to Slice 9 (`feat/slice-09-frontend-ux`)
+Scroll fix, Tavily cache, demo reset, ads toggle, and loading affordances were implemented on the slice 9 branch. Remaining slice 8 items stay below.
 
 ### Tavily Cache
 Avoid re-fetching the same query twice during the demo:
