@@ -42,7 +42,7 @@ score ≥ 0.7 + ads on → [Slice 3] Thrad bid → ad in side panel
 | 7 | Overmind Trace | Could | 20 min | done | `feat/slice-07-overmind-trace` |
 | 8 | Polish + Demo Prep (remainder) | Could | 10 min | queued | — |
 | 9 | Frontend UI/UX + Demo Polish | Should | ~60 min | **done** | `feat/slice-09-frontend-ux` |
-| 10 | Persona & Answer Alignment | Should | ~75 min | **in progress** | `feat/slice-10-persona-alignment` |
+| 10 | Persona & Answer Alignment | Should | ~75 min | **done** | `main` |
 
 **Must Have total: ~95 min**  
 **Should Have total: ~170 min** (includes slices 9–10)  

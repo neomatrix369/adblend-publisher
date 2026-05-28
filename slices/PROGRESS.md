@@ -14,11 +14,9 @@ Last updated: 2026-05-28
 | 8 | Polish + Demo Prep (remainder) | **queued** | Error states + final checklist only — see `slice-08-polish.md` |
 | 9 | Frontend UI/UX + Demo Polish | **done** | UI, scroll, cache, reset; branch `feat/slice-09-frontend-ux` |
 | 9b | Publisher impact hierarchy | **done** | Hero panels for intent/ad/metrics; `feat/slice-09-impact-hierarchy` |
-| 10 | Persona & Answer Alignment | **in progress** | Personas, answer classifier, alignment panel — branch `feat/slice-10-persona-alignment` |
+| 10 | Persona & Answer Alignment | **done** | Personas, alignment panel, metrics clarity; merged to `main` |
 
 ## Active slice
-
-**Slice 10** — persona metadata, answer classification, alignment panel ([`slice-10-persona-alignment.md`](slice-10-persona-alignment.md)). Branch: `feat/slice-10-persona-alignment`.
 
 **Slice 8 (remainder)** — optional error-state hardening ([`slice-08-polish.md`](slice-08-polish.md)).
 
