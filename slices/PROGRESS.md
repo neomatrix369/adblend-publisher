@@ -12,7 +12,8 @@ Last updated: 2026-05-28
 | 6 | AdTech Metrics Panel | **done** | `metrics.py`, panel + reset; `/chat` returns metrics |
 | 7 | Overmind Trace | **done** | Overmind init, trace panel, pipeline spans; branch `feat/slice-07-overmind-trace` |
 | 8 | Polish + Demo Prep (remainder) | **queued** | Error states + final checklist only — see `slice-08-polish.md` |
-| 9 | Frontend UI/UX + Demo Polish | **done** | UI, scroll, cache, reset, ads toggle; `feat/slice-09-frontend-ux` |
+| 9 | Frontend UI/UX + Demo Polish | **done** | UI, scroll, cache, reset; branch `feat/slice-09-frontend-ux` |
+| 9b | Publisher impact hierarchy | **done** | Hero panels for intent/ad/metrics; `feat/slice-09-impact-hierarchy` |
 
 ## Active slice
 
@@ -28,7 +29,7 @@ Plan: [`SLICES.md`](SLICES.md) · Slice 9 spec: [`slice-09-frontend-ux.md`](slic
 - `lucide-react`; `lib/tier-styles.ts`; `components/ui/Spinner.tsx`
 - Viewport scroll lock; chat scroll shows top of long assistant replies
 - Tavily cache, `POST /demo/reset`, ads toggle, reset demo button, loading skeletons
-- Branch: `feat/slice-09-frontend-ux`
+- Branch: `feat/slice-09-frontend-ux` (+ impact UI on `feat/slice-09-impact-hierarchy`)
 
 ## Slice 7 completed
 
