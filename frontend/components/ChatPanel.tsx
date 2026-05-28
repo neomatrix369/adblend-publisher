@@ -3,8 +3,9 @@
 import { FormEvent, useCallback, useLayoutEffect, useRef, useState } from "react";
 import { ChevronDown, ChevronUp, MessageSquare, Send } from "lucide-react";
 
+import TokenCostDetail from "@/components/TokenCostDetail";
 import Spinner from "@/components/ui/Spinner";
-import type { TavilySource, TokenUsage } from "@/lib/api";
+import type { AnthropicTokenCost, TavilySource, TokenUsage } from "@/lib/api";
 
 const COLLAPSE_CHAR_THRESHOLD = 320;
 const COLLAPSE_LINE_THRESHOLD = 6;
@@ -62,6 +63,7 @@ export type Message = {
   content: string;
   sources?: TavilySource[];
   tokens?: TokenUsage;
+  anthropicTokenCost?: AnthropicTokenCost | null;
 };
 
 type ChatPanelProps = {
@@ -199,8 +201,19 @@ export default function ChatPanel({
                           </ul>
                         </div>
                       ) : null}
-                      {msg.tokens &&
-                      (msg.tokens.input > 0 || msg.tokens.output > 0) ? (
+                      {msg.anthropicTokenCost ? (
+                        <TokenCostDetail
+                          usage={{
+                            inputTokens: msg.anthropicTokenCost.input_tokens,
+                            outputTokens: msg.anthropicTokenCost.output_tokens,
+                            inputCostUsd: msg.anthropicTokenCost.input_cost_usd,
+                            outputCostUsd: msg.anthropicTokenCost.output_cost_usd,
+                            totalCostUsd: msg.anthropicTokenCost.total_cost_usd,
+                            model: msg.anthropicTokenCost.model,
+                          }}
+                        />
+                      ) : msg.tokens &&
+                        (msg.tokens.input > 0 || msg.tokens.output > 0) ? (
                         <p className="font-mono text-xs tabular-nums text-foreground-muted">
                           {msg.tokens.input} in · {msg.tokens.output} out
                         </p>

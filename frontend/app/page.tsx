@@ -16,6 +16,7 @@ import {
   type DatasetEntry,
   type FocusPayload,
   type IntentPayload,
+  type QueryCostPayload,
   type SessionMetrics,
   type TokenUsage,
   type TracePayload,
@@ -33,6 +34,7 @@ export default function Home() {
   const [ad, setAd] = useState<AdPayload | null>(null);
   const [tokens, setTokens] = useState<TokenUsage | null>(null);
   const [metrics, setMetrics] = useState<SessionMetrics | null>(null);
+  const [costs, setCosts] = useState<QueryCostPayload | null>(null);
   const [trace, setTrace] = useState<TracePayload | null>(null);
   const [overmindConfigured, setOvermindConfigured] = useState(false);
   const [apiReachable, setApiReachable] = useState<boolean | null>(null);
@@ -101,6 +103,7 @@ export default function Home() {
       if (data.metrics) {
         setMetrics(data.metrics);
       }
+      setCosts(data.costs ?? null);
       if (data.trace) {
         setTrace(data.trace);
       }
@@ -111,6 +114,7 @@ export default function Home() {
           content: data.response,
           sources: data.sources?.length ? data.sources : undefined,
           tokens: data.tokens ?? undefined,
+          anthropicTokenCost: data.costs?.anthropic_tokens ?? undefined,
         },
       ]);
     } catch (err) {
@@ -145,6 +149,7 @@ export default function Home() {
       setAlignment(null);
       setAd(null);
       setTokens(null);
+      setCosts(null);
       setTrace(null);
       setMetrics({
         total_queries: 0,
@@ -154,6 +159,7 @@ export default function Home() {
         bids_attempted: 0,
         fill_rate: 0,
         query_ad_rate: 0,
+        session_cogs_usd: 0,
         last_impression: null,
       });
       setIsResettingDemo(false);
@@ -175,8 +181,10 @@ export default function Home() {
         bids_attempted: 0,
         fill_rate: 0,
         query_ad_rate: 0,
+        session_cogs_usd: 0,
         last_impression: null,
       });
+      setCosts(null);
     } finally {
       setIsResettingMetrics(false);
     }
@@ -281,6 +289,7 @@ export default function Home() {
             ad={ad}
             tokens={tokens}
             metrics={metrics}
+            costs={costs}
             trace={trace}
             overmindConfigured={overmindConfigured}
             isLoading={isLoading}

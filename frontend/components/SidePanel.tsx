@@ -3,17 +3,21 @@ import { ChevronDown, SlidersHorizontal } from "lucide-react";
 import AdPlacementPanel from "@/components/AdPlacementPanel";
 import AlignmentPanel from "@/components/AlignmentPanel";
 import IntentPanel from "@/components/IntentPanel";
+import CostPanel from "@/components/CostPanel";
 import MetricsPanel from "@/components/MetricsPanel";
+import TokenCostDetail from "@/components/TokenCostDetail";
 import TracePanel from "@/components/TracePanel";
 import type {
   AdPayload,
   AlignmentPayload,
   FocusPayload,
   IntentPayload,
+  QueryCostPayload,
   SessionMetrics,
   TokenUsage,
   TracePayload,
 } from "@/lib/api";
+import { tokenCostFromAnthropicSummary } from "@/lib/token-cost-format";
 
 type SidePanelProps = {
   intent: IntentPayload | null;
@@ -22,6 +26,7 @@ type SidePanelProps = {
   ad: AdPayload | null;
   tokens: TokenUsage | null;
   metrics: SessionMetrics | null;
+  costs: QueryCostPayload | null;
   trace: TracePayload | null;
   overmindConfigured?: boolean;
   isLoading?: boolean;
@@ -38,6 +43,7 @@ export default function SidePanel({
   ad,
   tokens,
   metrics,
+  costs,
   trace,
   overmindConfigured = false,
   isLoading = false,
@@ -82,6 +88,7 @@ export default function SidePanel({
           onReset={onResetMetrics}
           isResetting={isResettingMetrics}
         />
+        <CostPanel costs={costs} isLoading={isLoading} />
       </div>
 
       <div className="panel-muted mt-4 flex shrink-0 items-center justify-between gap-3 px-3 py-2.5">
@@ -114,7 +121,12 @@ export default function SidePanel({
             <h3 className="text-[10px] font-semibold uppercase tracking-wider text-foreground-muted">
               Token usage
             </h3>
-            {tokens != null && (tokens.input > 0 || tokens.output > 0) ? (
+            {costs?.anthropic_tokens ? (
+              <TokenCostDetail
+                usage={tokenCostFromAnthropicSummary(costs.anthropic_tokens)}
+                className="mt-1.5"
+              />
+            ) : tokens != null && (tokens.input > 0 || tokens.output > 0) ? (
               <p className="mt-1.5 font-mono text-xs tabular-nums text-foreground-muted">
                 {tokens.input} in · {tokens.output} out
               </p>

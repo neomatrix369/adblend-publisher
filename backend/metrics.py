@@ -22,6 +22,7 @@ class SessionMetrics:
     ads_served: int = 0
     no_fill: int = 0
     blocked: int = 0
+    session_cogs_usd: float = 0.0
     last_impression: LastImpression | None = field(default=None)
 
     def record(
@@ -31,8 +32,10 @@ class SessionMetrics:
         intent_score: float,
         ad_served: bool,
         thrad_called: bool,
+        query_cogs_usd: float = 0.0,
     ) -> None:
         self.total_queries += 1
+        self.session_cogs_usd = round(self.session_cogs_usd + query_cogs_usd, 6)
         if ad_served:
             self.ads_served += 1
             state: ImpressionState = "logged"
@@ -76,6 +79,7 @@ class SessionMetrics:
             "bids_attempted": self.bids_attempted,
             "fill_rate": self.fill_rate,
             "query_ad_rate": self.query_ad_rate,
+            "session_cogs_usd": round(self.session_cogs_usd, 6),
         }
         if self.last_impression is not None:
             payload["last_impression"] = asdict(self.last_impression)
@@ -88,6 +92,7 @@ class SessionMetrics:
         self.ads_served = 0
         self.no_fill = 0
         self.blocked = 0
+        self.session_cogs_usd = 0.0
         self.last_impression = None
 
 

@@ -43,6 +43,7 @@ score ≥ 0.7 + ads on → [Slice 3] Thrad bid → ad in side panel
 | 8 | Polish + Demo Prep (remainder) | Could | 10 min | queued | — |
 | 9 | Frontend UI/UX + Demo Polish | Should | ~60 min | **done** | `feat/slice-09-frontend-ux` |
 | 10 | Persona & Answer Alignment | Should | ~75 min | **done** | `main` |
+| 11 | Unit economics (COGS) | Should | ~30 min | **done** | `feat/slice-11-unit-economics` |
 
 **Must Have total: ~95 min**  
 **Should Have total: ~170 min** (includes slices 9–10)  
@@ -61,6 +62,8 @@ Originally slice 8 covered demo polish (cache, reset, toggles, loading) and slic
 **Slice 9** spec: [`slice-09-frontend-ux.md`](slice-09-frontend-ux.md)
 
 **Slice 10** spec: [`slice-10-persona-alignment.md`](slice-10-persona-alignment.md) — restore personas, classify assistant replies, show question↔answer trait match %.
+
+**Slice 11** spec: [`slice-11-unit-economics.md`](slice-11-unit-economics.md) — per-service COGS, token in/out USD, session cumulative spend.
 
 ---
 

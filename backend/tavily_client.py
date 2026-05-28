@@ -1,5 +1,6 @@
 import logging
 import os
+from dataclasses import dataclass
 from typing import Any
 
 from tavily import TavilyClient
@@ -26,18 +27,24 @@ def clear_cache() -> None:
     _cache.clear()
 
 
-def search(query: str, max_results: int = 3) -> list[dict[str, Any]]:
-    """Return Tavily results as [{title, url, content}, ...]. Empty list on no hits."""
+@dataclass(frozen=True)
+class TavilySearchResult:
+    sources: list[dict[str, Any]]
+    from_cache: bool
+
+
+def search(query: str, max_results: int = 3) -> TavilySearchResult:
+    """Return Tavily results and whether the response came from the demo cache."""
     cache_key = f"{query.strip().lower()}:{max_results}"
     if cache_key in _cache:
-        return _cache[cache_key]
+        return TavilySearchResult(sources=_cache[cache_key], from_cache=True)
 
     try:
         raw = _get_client().search(query, max_results=max_results)
         hits = raw.get("results") if isinstance(raw, dict) else None
         if not hits:
             _cache[cache_key] = []
-            return []
+            return TavilySearchResult(sources=[], from_cache=False)
         results = [
             {
                 "title": str(item.get("title", "")),
@@ -48,9 +55,9 @@ def search(query: str, max_results: int = 3) -> list[dict[str, Any]]:
             if isinstance(item, dict)
         ]
         _cache[cache_key] = results
-        return results
+        return TavilySearchResult(sources=results, from_cache=False)
     except ValueError:
         raise
     except Exception as exc:
         logger.warning("Tavily search failed for query=%r: %s", query, exc)
-        return []
+        return TavilySearchResult(sources=[], from_cache=False)

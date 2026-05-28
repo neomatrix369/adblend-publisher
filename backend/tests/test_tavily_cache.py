@@ -19,6 +19,8 @@ def test_search_uses_cache_on_repeat_query() -> None:
             first = tavily_client.search("vector database rag")
             second = tavily_client.search("vector database rag")
 
-    assert first == second
-    assert len(first) == 1
+    assert first.sources == second.sources
+    assert len(first.sources) == 1
+    assert first.from_cache is False
+    assert second.from_cache is True
     mock_client.search.assert_called_once()

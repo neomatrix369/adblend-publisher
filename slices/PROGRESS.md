@@ -15,12 +15,22 @@ Last updated: 2026-05-28
 | 9 | Frontend UI/UX + Demo Polish | **done** | UI, scroll, cache, reset; branch `feat/slice-09-frontend-ux` |
 | 9b | Publisher impact hierarchy | **done** | Hero panels for intent/ad/metrics; `feat/slice-09-impact-hierarchy` |
 | 10 | Persona & Answer Alignment | **done** | Personas, alignment panel, metrics clarity; merged to `main` |
+| 11 | Unit economics (COGS) | **done** | Per-service COGS, token in/out USD, model; `feat/slice-11-unit-economics` |
 
 ## Active slice
 
 **Slice 8 (remainder)** — optional error-state hardening ([`slice-08-polish.md`](slice-08-polish.md)).
 
 Plan: [`SLICES.md`](SLICES.md)
+
+## Slice 11 completed
+
+- `backend/service_pricing.py` — env rates, per-step costs, `anthropic_tokens` summary
+- `backend/main.py` — `costs` on `ChatResponse`; `session_cogs_usd` on metrics
+- `backend/tavily_client.py` — `TavilySearchResult.from_cache` for $0 cached searches
+- `frontend/components/CostPanel.tsx`, `TokenCostDetail.tsx`, `lib/token-cost-format.ts`
+- Token UI: `N in ($X) · M out ($Y) · $Z total` + model id (unit economics, technical details, chat footer)
+- Branch: `feat/slice-11-unit-economics`
 
 ## Slice 9 completed
 

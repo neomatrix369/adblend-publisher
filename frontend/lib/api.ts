@@ -55,7 +55,39 @@ export type SessionMetrics = {
   bids_attempted?: number;
   fill_rate: number;
   query_ad_rate?: number;
+  session_cogs_usd?: number;
   last_impression: LastImpression | null;
+};
+
+export type CostLine = {
+  service: string;
+  step: string;
+  label: string;
+  amount_usd: number;
+  input_tokens?: number | null;
+  output_tokens?: number | null;
+  input_cost_usd?: number | null;
+  output_cost_usd?: number | null;
+  model?: string | null;
+  from_cache?: boolean | null;
+};
+
+export type AnthropicTokenCost = {
+  model: string;
+  input_tokens: number;
+  output_tokens: number;
+  input_cost_usd: number;
+  output_cost_usd: number;
+  total_cost_usd: number;
+  input_usd_per_mtok: number;
+  output_usd_per_mtok: number;
+};
+
+export type QueryCostPayload = {
+  lines: CostLine[];
+  total_usd: number;
+  session_cumulative_usd: number;
+  anthropic_tokens?: AnthropicTokenCost | null;
 };
 
 export type TraceCall = {
@@ -100,6 +132,7 @@ export type ChatResponse = {
   alignment: AlignmentPayload | null;
   tokens: TokenUsage | null;
   metrics: SessionMetrics | null;
+  costs: QueryCostPayload | null;
   trace: TracePayload | null;
 };
 

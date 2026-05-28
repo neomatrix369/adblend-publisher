@@ -23,6 +23,7 @@ from claude_client import generate_response
 from intent import INTENT_GATE_THRESHOLD, score_intent
 from metrics import metrics as session_metrics
 from overmind_setup import init_overmind, is_overmind_configured
+from service_pricing import build_query_costs
 from thrad_client import request_ad
 from tavily_client import clear_cache as clear_tavily_cache
 from tavily_client import search as tavily_search
@@ -103,7 +104,39 @@ class SessionMetricsPayload(BaseModel):
     bids_attempted: int = 0
     fill_rate: float
     query_ad_rate: float = 0.0
+    session_cogs_usd: float = 0.0
     last_impression: LastImpressionPayload | None = None
+
+
+class CostLinePayload(BaseModel):
+    service: str
+    step: str
+    label: str
+    amount_usd: float
+    input_tokens: int | None = None
+    output_tokens: int | None = None
+    input_cost_usd: float | None = None
+    output_cost_usd: float | None = None
+    model: str | None = None
+    from_cache: bool | None = None
+
+
+class AnthropicTokenCostPayload(BaseModel):
+    model: str
+    input_tokens: int
+    output_tokens: int
+    input_cost_usd: float
+    output_cost_usd: float
+    total_cost_usd: float
+    input_usd_per_mtok: float
+    output_usd_per_mtok: float
+
+
+class QueryCostPayload(BaseModel):
+    lines: list[CostLinePayload] = Field(default_factory=list)
+    total_usd: float = 0.0
+    session_cumulative_usd: float = 0.0
+    anthropic_tokens: AnthropicTokenCostPayload | None = None
 
 
 class TraceCallPayload(BaseModel):
@@ -156,6 +189,7 @@ class ChatResponse(BaseModel):
     alignment: AlignmentPayload | None = None
     tokens: TokenUsage | None = None
     metrics: SessionMetricsPayload | None = None
+    costs: QueryCostPayload | None = None
     trace: TracePayload | None = None
 
 
@@ -233,15 +267,15 @@ async def health():
 @app.post("/chat", response_model=ChatResponse)
 async def chat(req: ChatRequest):
     trace = TraceCollector()
+    tavily_from_cache = False
+    use_live_intent = not (req.source == "dropdown" and req.intent is not None)
     try:
         with request_trace_root():
             with trace.record("tavily.search"):
-                sources = await asyncio.to_thread(tavily_search, req.message)
+                tavily_result = await asyncio.to_thread(tavily_search, req.message)
+            sources = tavily_result.sources
+            tavily_from_cache = tavily_result.from_cache
             context = _format_context(sources)
-
-            use_live_intent = not (
-                req.source == "dropdown" and req.intent is not None
-            )
             if use_live_intent:
                 with trace.record("claude.intent"):
                     intent, focus, intent_tokens = await asyncio.to_thread(
@@ -303,15 +337,32 @@ async def chat(req: ChatRequest):
 
     thrad_called = req.ads_enabled and intent.score >= INTENT_GATE_THRESHOLD
     ad_served = ad is not None
+
+    cost_lines, query_total_usd, anthropic_summary = build_query_costs(
+        tavily_from_cache=tavily_from_cache,
+        intent_tokens=intent_tokens.model_dump(),
+        respond_tokens=chat_tokens,
+        align_tokens=align_tokens,
+        thrad_bid_attempted=thrad_called,
+        intent_scored_live=use_live_intent,
+    )
+
     session_metrics.record(
         intent_tier=intent.tier,
         intent_score=intent.score,
         ad_served=ad_served,
         thrad_called=thrad_called,
+        query_cogs_usd=query_total_usd,
     )
     metrics_payload = SessionMetricsPayload(**session_metrics.to_dict())
 
     trace_payload = TracePayload(**trace.to_dict())
+    costs_payload = QueryCostPayload(
+        lines=[CostLinePayload(**line.to_dict()) for line in cost_lines],
+        total_usd=query_total_usd,
+        session_cumulative_usd=metrics_payload.session_cogs_usd,
+        anthropic_tokens=AnthropicTokenCostPayload(**anthropic_summary.to_dict()),
+    )
 
     return ChatResponse(
         response=response_text,
@@ -322,5 +373,6 @@ async def chat(req: ChatRequest):
         alignment=alignment,
         tokens=tokens,
         metrics=metrics_payload,
+        costs=costs_payload,
         trace=trace_payload,
     )
