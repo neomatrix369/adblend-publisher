@@ -4,10 +4,12 @@ import type {
   IntentPayload,
   SessionMetrics,
   TokenUsage,
+  TracePayload,
 } from "@/lib/api";
 
 import IntentPanel from "@/components/IntentPanel";
 import MetricsPanel from "@/components/MetricsPanel";
+import TracePanel from "@/components/TracePanel";
 
 type SidePanelProps = {
   intent: IntentPayload | null;
@@ -15,6 +17,8 @@ type SidePanelProps = {
   ad: AdPayload | null;
   tokens: TokenUsage | null;
   metrics: SessionMetrics | null;
+  trace: TracePayload | null;
+  overmindConfigured?: boolean;
   onResetMetrics: () => void;
   isResettingMetrics: boolean;
 };
@@ -25,6 +29,8 @@ export default function SidePanel({
   ad,
   tokens,
   metrics,
+  trace,
+  overmindConfigured = false,
   onResetMetrics,
   isResettingMetrics,
 }: SidePanelProps) {
@@ -84,6 +90,8 @@ export default function SidePanel({
         onReset={onResetMetrics}
         isResetting={isResettingMetrics}
       />
+
+      <TracePanel trace={trace} overmindConfigured={overmindConfigured} />
     </aside>
   );
 }

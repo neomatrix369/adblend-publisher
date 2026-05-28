@@ -53,6 +53,17 @@ export type SessionMetrics = {
   last_impression: LastImpression | null;
 };
 
+export type TraceCall = {
+  name: string;
+  latency_ms: number;
+};
+
+export type TracePayload = {
+  span_count: number;
+  total_latency_ms: number;
+  calls: TraceCall[];
+};
+
 export type ChatResponse = {
   response: string;
   sources: TavilySource[];
@@ -61,6 +72,7 @@ export type ChatResponse = {
   focus: FocusPayload | null;
   tokens: TokenUsage | null;
   metrics: SessionMetrics | null;
+  trace: TracePayload | null;
 };
 
 export type DatasetEntry = {
