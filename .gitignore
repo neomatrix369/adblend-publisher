@@ -28,4 +28,5 @@ frontend/out/
 # Added by code-review-graph
 .code-review-graph/
 
-slices/
+# Local-only slice notes (tracked specs live in slices/*.md)
+slices/.local/

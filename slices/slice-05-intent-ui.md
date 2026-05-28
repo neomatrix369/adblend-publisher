@@ -130,10 +130,10 @@ Return ONLY valid JSON:
 
 ## Done When
 
-- [ ] Score bar animates on each query
-- [ ] Tier badge colour matches intent tier
-- [ ] Focus chip shows correct category › sub-category
-- [ ] Rationale text visible (muted)
-- [ ] Gate decision (eligible / blocked) shown clearly
-- [ ] Token count visible somewhere in UI
-- [ ] Freeform queries get focus auto-detected
+- [x] Score bar animates on each query
+- [x] Tier badge colour matches intent tier
+- [x] Focus chip shows correct category › sub-category
+- [x] Rationale text visible (muted)
+- [x] Gate decision (eligible / blocked) shown clearly
+- [x] Token count visible somewhere in UI
+- [x] Freeform queries get focus auto-detected

@@ -26,13 +26,16 @@ Design direction: **UI/UX Pro Max** (`--design-system` for SaaS ad-tech analytic
 ### Components (visual)
 | File | Changes |
 |------|---------|
-| `page.tsx` | Header with logo mark, API Live/Offline pill, reset demo; responsive stack |
-| `ChatPanel.tsx` | Empty state, bubbles, spinner, scroll behaviour |
+| `page.tsx` | Header with logo mark, API Live/Offline pill, reset demo; `ResizableSplitPane` layout |
+| `ChatPanel.tsx` | Empty state, bubbles, spinner, scroll behaviour, collapse/expand long replies |
 | `Dropdown.tsx` | Text tier labels (no emoji); chevron; load error alert |
-| `IntentPanel.tsx` | Lucide gate icons, score bar, loading skeleton |
-| `SidePanel.tsx` | Panel cards, ads toggle, ad placement block |
-| `MetricsPanel.tsx` | Reset with spinner, clearer rows |
+| `IntentPanel.tsx` | Lucide gate icons, score bar, loading skeleton; `ImpactPanel` wrapper (9b) |
+| `SidePanel.tsx` | Panel cards, ads toggle, alignment/cost/trace in technical details |
+| `AdPlacementPanel.tsx` | Sponsored placement block (9b) |
+| `MetricsPanel.tsx` | Reset with spinner, clearer rows; `ImpactPanel` wrapper (9b) |
 | `TracePanel.tsx` | Overmind/local badge, latency bars |
+| `ResizableSplitPane.tsx` | Drag/keyboard resize; width persisted in `localStorage` |
+| `components/ui/ImpactPanel.tsx` | Shared hero panel chrome (9b) |
 | `lib/tier-styles.ts` | Shared tier labels and badge colours |
 | `components/ui/Spinner.tsx` | Reusable loading indicator |
 
@@ -67,6 +70,7 @@ Design direction: **UI/UX Pro Max** (`--design-system` for SaaS ad-tech analytic
 - [x] Side panel scrolls independently on `lg+`; capped height when stacked on mobile
 - [x] Long chat replies do not push side panel off-screen; reply starts at top of scroll area
 - [x] Tavily cache, demo reset, ads toggle
+- [x] Resizable desktop split; long replies collapsible
 - [x] `npm run build` and `npm run lint` pass
 
 ---
@@ -88,6 +92,9 @@ npm run dev   # manual: reset demo, ads toggle, long dropdown answer, side panel
 3. `feat(slice-09): fix viewport scroll and demo polish`
 4. `fix(slice-09): scroll to top of long assistant replies`
 5. `docs(slice-09): align slice docs after moving polish commits`
+6. `feat(slice-09): highlight publisher impact flow in side panel` (9b)
+7. `feat(frontend): resizable chat/side split and neutral demo copy`
+8. `feat(frontend): collapse long assistant answers in chat`
 
 ---
 

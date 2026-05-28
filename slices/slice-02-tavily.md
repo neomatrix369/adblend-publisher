@@ -90,8 +90,8 @@ ANTHROPIC_API_KEY=sk-ant-...
 
 ## Done When
 
-- [ ] Type any question → real grounded response (not mock)
-- [ ] Response references actual current information
-- [ ] Sources available in response payload
-- [ ] No Tavily API errors on valid queries
-- [ ] Falls back gracefully if Tavily returns empty results
+- [x] Type any question → real grounded response (not mock)
+- [x] Response references actual current information
+- [x] Sources available in response payload
+- [x] No Tavily API errors on valid queries
+- [x] Falls back gracefully if Tavily returns empty results

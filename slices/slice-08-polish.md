@@ -1,18 +1,16 @@
 # Slice 8 — Polish + Demo Prep (remainder)
 **Priority:** Could Have | **Est:** 10 min  
-**Depends on:** Slices 1–7, **Slice 9** (most polish shipped there)
+**Depends on:** Slices 1–11 (most polish shipped in slices 9–11)
 
 ---
 
 ## Goal
 
-Close remaining demo rough edges **not** already delivered in slice 9: resilient error paths and a quick pre-demo checklist.
+Close remaining demo rough edges **not** already delivered in slices 9–11: resilient error paths and a quick pre-demo checklist.
 
 ---
 
 ## Shipped in Slice 9 (do not re-implement here)
-
-Branch: `feat/slice-09-frontend-ux`
 
 - [x] Viewport locked to `h-dvh`; chat and side panel scroll independently
 - [x] Long assistant replies scroll to **start** of bubble (not clipped mid-answer)
@@ -21,6 +19,8 @@ Branch: `feat/slice-09-frontend-ux`
 - [x] **Reset demo** header button (full UI + backend reset)
 - [x] **Ads enabled** toggle + `ads_enabled` on `POST /chat`
 - [x] Loading: intent skeleton, placement message, chat status text
+- [x] Resizable chat/side split (`ResizableSplitPane`, `localStorage`)
+- [x] Collapse/expand for long assistant answers (`ChatPanel`)
 
 ---
 
@@ -61,8 +61,18 @@ Branch: `feat/slice-09-frontend-ux`
 1. Uncheck **Ads enabled** in the side panel
 2. Run a high-intent query — response without sponsored placement
 
+**Scenario E — Answer alignment (slice 10):**
+1. Select a student-aid dropdown question with a persona
+2. After reply, point to **Answer fit** panel: focus match %, persona match
+3. "Publisher can measure whether the assistant stayed on-topic for that user segment"
+
+**Scenario F — Unit economics (slice 11):**
+1. Run any query; open **Unit economics** in the side panel
+2. Point to per-step COGS (Tavily, Claude intent/respond/align, Thrad)
+3. Expand **Technical details** for aggregate token USD; note session COGS in metrics
+
 ---
 
 ## Branch
 
-No dedicated branch until work starts. Use `feat/slice-08-polish-demo` or fold into a small follow-up PR after slice 9 merges.
+Use `feat/slice-08-polish-demo` or fold into a small follow-up PR when hardening error paths.

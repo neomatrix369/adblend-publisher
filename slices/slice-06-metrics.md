@@ -10,23 +10,9 @@ Running session metrics that update after every query. Shows the sell-side publi
 
 ---
 
-## Metrics State (frontend, in-memory per session)
+## Metrics State (backend, in-memory per server process)
 
-```ts
-interface SessionMetrics {
-  totalQueries: number
-  adsServed: number
-  noFill: number
-  blocked: number          // intent below threshold
-  fillRate: number         // adsServed / (adsServed + noFill) %
-  lastImpression: {
-    state: "logged" | "none"
-    tier: string
-    score: number
-    bidWon: boolean
-  } | null
-}
-```
+Frontend displays metrics returned on each `POST /chat` response; session state lives in `backend/metrics.py`.
 
 ---
 
@@ -124,15 +110,15 @@ return {
 2. Update `/chat` to record and return metrics
 3. Build metrics panel component
 4. Frontend: update metrics state after every response
-5. Add `GET /metrics/reset` endpoint for demo reset
+5. Add `POST /metrics/reset` endpoint for demo reset
 6. Wire reset button in UI (for demo restarts)
 
 ---
 
 ## Done When
 
-- [ ] Metrics update after every query
-- [ ] Fill rate calculates correctly
-- [ ] Last impression state reflects actual Thrad outcome
-- [ ] Reset button clears session metrics
-- [ ] Metrics panel does not flicker or reset on re-render
+- [x] Metrics update after every query
+- [x] Fill rate calculates correctly
+- [x] Last impression state reflects actual Thrad outcome
+- [x] Reset button clears session metrics
+- [x] Metrics panel does not flicker or reset on re-render

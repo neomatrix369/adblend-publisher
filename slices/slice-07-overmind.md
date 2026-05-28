@@ -1,81 +1,70 @@
 # Slice 7 — Overmind Trace Panel
 **Priority:** Could Have | **Est:** 20 min  
 **Depends on:** Slices 1–6 complete  
-**Condition:** Only attempt if time allows
+**Status:** **done** · Branch: `feat/slice-07-overmind-trace`
 
 ---
 
 ## Goal
 
-Add Overmind tracing to auto-instrument all Claude and Tavily calls. Show a live trace summary in the UI. Targets the Overmind bonus prize — show Overmind doing real work on the pipeline, not a throwaway badge.
+Add Overmind tracing to instrument Claude calls. Show a live trace summary in the UI. Targets the Overmind bonus prize — show Overmind doing real work on the pipeline, not a throwaway badge.
 
 ---
 
 ## What Gets Traced
 
-With Overmind auto-instrumentation, every call in the pipeline is captured:
-- Tavily search call (Slice 2)
-- Claude intent scoring call (Slice 3/5)
-- Claude organic response call (Slice 2)
+Each `/chat` request records timed spans via `TraceCollector` (always) and mirrors them as OTEL spans when Overmind is configured:
 
-That gives a real trace tree per query — not mocked.
+| Span | When |
+|------|------|
+| `tavily.search` | Every query |
+| `claude.intent` | Freeform only (dropdown uses static intent) |
+| `claude.respond` | Every query |
+| `claude.answer_align` | Every query (slice 10) |
+| `thrad.bid` | When ads enabled and score ≥ 0.70 |
+
+Parent span `adblend.chat` wraps the pipeline for the Overmind dashboard.
 
 ---
 
-## Backend Setup
+## Shipped implementation
 
-**Install:** `pip install overmind-sdk`
+**Install:** `overmind-sdk` (in `requirements.txt`)
 
-**File:** `backend/main.py` — add at top, before anything else:
+**File:** `backend/overmind_setup.py` — called once at startup from `main.py`:
 
 ```python
-import overmind
-
-overmind.init(
-    api_key=os.getenv("OVERMIND_API_KEY"),
-    service_name="adblend-publisher"
+init(
+    overmind_api_key=api_key,
+    service_name=os.getenv("OVERMIND_SERVICE_NAME", "adblend-publisher"),
+    environment=os.getenv("OVERMIND_ENVIRONMENT", "development"),
+    providers=["anthropic"],  # auto-instruments Anthropic SDK calls
 )
-# Auto-instruments anthropic + tavily calls — nothing else needed
 ```
+
+**File:** `backend/trace_collector.py` — `TraceCollector.record(name)` times each step and calls `get_tracer().start_as_current_span(name)` when Overmind is available. Works locally without an API key.
+
+**Response:** `trace` field on `ChatResponse` from `TraceCollector.to_dict()` — not `get_last_trace_summary()`.
 
 ---
 
-## Trace Summary In Response
-
-Overmind SDK provides span data after each traced call. Extract a lightweight summary:
-
-```python
-# After all calls complete, pull last trace summary
-trace_summary = overmind.get_last_trace_summary()  # check actual SDK method
-
-return {
-    ...
-    "trace": {
-        "span_count": trace_summary.span_count,
-        "total_latency_ms": trace_summary.total_ms,
-        "calls": [
-            {"name": s.name, "latency_ms": s.duration_ms}
-            for s in trace_summary.spans
-        ]
-    }
-}
-```
-
----
-
-## Trace Panel UI (side panel, below metrics)
+## Trace Panel UI (side panel, Technical details)
 
 ```
 ┌─────────────────────────────┐
-│  TRACE  (Overmind)          │
+│  TRACE  (Overmind | Local)  │
 │                             │
-│  3 spans · 847ms total      │
+│  5 spans · 1247ms total     │
 │                             │
 │  tavily.search      312ms   │
 │  claude.intent       89ms   │
 │  claude.respond     446ms   │
+│  claude.answer_align  95ms  │
+│  thrad.bid           12ms   │
 └─────────────────────────────┘
 ```
+
+Badge shows **Overmind** when `OVERMIND_API_KEY` is set and init succeeded; **Local** otherwise.
 
 ---
 
@@ -83,25 +72,17 @@ return {
 
 ```
 OVERMIND_API_KEY=...
+OVERMIND_SERVICE_NAME=adblend-publisher
+OVERMIND_ENVIRONMENT=development
 ```
-
----
-
-## Steps
-
-1. `pip install overmind-sdk`
-2. Add `overmind.init()` at top of `main.py`
-3. Check SDK docs for `get_last_trace_summary()` or equivalent
-4. Add `trace` field to response payload
-5. Build trace panel component (simple list, latency bars)
-6. Verify traces appear in Overmind dashboard at `console.overmindlab.ai`
 
 ---
 
 ## Done When
 
-- [ ] Traces visible in Overmind dashboard for every query
-- [ ] Trace panel in UI shows span names + latencies
-- [ ] Claude intent call and Claude respond call appear as separate spans
-- [ ] Tavily call appears as a traced span
-- [ ] No performance regression (tracing is async/non-blocking)
+- [x] Traces visible in Overmind dashboard when API key configured
+- [x] Trace panel in UI shows span names + latencies
+- [x] Claude intent and respond appear as separate spans
+- [x] Tavily call appears as a traced span
+- [x] `thrad.bid` and `claude.answer_align` traced (post-slice-7 additions)
+- [x] No performance regression (tracing is lightweight / non-blocking)

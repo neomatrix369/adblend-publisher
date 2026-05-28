@@ -22,9 +22,11 @@ score ≥ 0.7 + ads on → [Slice 3] Thrad bid → ad in side panel
         ↓
 [Slice 6] Metrics panel updates · [Slice 7] Trace spans
         ↓
-[Slice 9] Publisher UI — layout, scroll, demo controls
+[Slice 10] Classify answer → alignment score (persona + focus)
         ↓
-[Slice 10] Persona + focus on question; classify answer; alignment score in UI
+[Slice 11] Per-service COGS + session cumulative spend
+        ↓
+[Slice 9/9b] Publisher UI — layout, impact panels, scroll, demo controls
 ```
 
 ---
@@ -42,11 +44,12 @@ score ≥ 0.7 + ads on → [Slice 3] Thrad bid → ad in side panel
 | 7 | Overmind Trace | Could | 20 min | done | `feat/slice-07-overmind-trace` |
 | 8 | Polish + Demo Prep (remainder) | Could | 10 min | queued | — |
 | 9 | Frontend UI/UX + Demo Polish | Should | ~60 min | **done** | `feat/slice-09-frontend-ux` |
+| 9b | Publisher impact hierarchy | Should | ~20 min | **done** | `feat/slice-09-impact-hierarchy` |
 | 10 | Persona & Answer Alignment | Should | ~75 min | **done** | `main` |
 | 11 | Unit economics (COGS) | Should | ~30 min | **done** | `feat/slice-11-unit-economics` |
 
 **Must Have total: ~95 min**  
-**Should Have total: ~170 min** (includes slices 9–10)  
+**Should Have total: ~200 min** (includes slices 9–11, 9b)  
 **Could Have total: ~30 min** (slice 7 done; slice 8 remainder only)
 
 ### Slice 8 vs 9 (plan change)
@@ -61,7 +64,9 @@ Originally slice 8 covered demo polish (cache, reset, toggles, loading) and slic
 
 **Slice 9** spec: [`slice-09-frontend-ux.md`](slice-09-frontend-ux.md)
 
-**Slice 10** spec: [`slice-10-persona-alignment.md`](slice-10-persona-alignment.md) — restore personas, classify assistant replies, show question↔answer trait match %.
+**Slice 9b** — impact hierarchy: `ImpactPanel`, `AdPlacementPanel`; hero styling for intent/ad/metrics (merged with slice 9 branch work).
+
+**Slice 10** spec: [`slice-10-persona-alignment.md`](slice-10-persona-alignment.md) — restore personas, classify assistant replies, cosine alignment scores in UI.
 
 **Slice 11** spec: [`slice-11-unit-economics.md`](slice-11-unit-economics.md) — per-service COGS, token in/out USD, session cumulative spend.
 

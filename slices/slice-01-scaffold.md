@@ -83,9 +83,9 @@ End-to-end skeleton running locally. User types a message, gets a mock response.
 
 ## Done When
 
-- [ ] App loads at `localhost:3000`
-- [ ] Type a message → mock response appears in chat
-- [ ] All three side panel sections visible (empty)
-- [ ] Dropdown renders (empty options)
-- [ ] No console errors
-- [ ] Backend running at `localhost:8001`
+- [x] App loads at `localhost:3000`
+- [x] Type a message → mock response appears in chat
+- [x] All three side panel sections visible (empty)
+- [x] Dropdown renders (empty options)
+- [x] No console errors
+- [x] Backend running at `localhost:8001`
