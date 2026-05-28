@@ -3,6 +3,8 @@ export type ChatRequest = {
   source: "freeform" | "dropdown";
   intent?: IntentPayload;
   focus?: FocusPayload;
+  persona_id?: string | null;
+  persona_role?: string | null;
   ads_enabled?: boolean;
 };
 
@@ -50,7 +52,9 @@ export type SessionMetrics = {
   ads_served: number;
   no_fill: number;
   blocked: number;
+  bids_attempted?: number;
   fill_rate: number;
+  query_ad_rate?: number;
   last_impression: LastImpression | null;
 };
 
@@ -65,12 +69,35 @@ export type TracePayload = {
   calls: TraceCall[];
 };
 
+export type AlignmentPayload = {
+  question: {
+    persona_id: string | null;
+    persona_role: string | null;
+    focus: FocusPayload;
+  };
+  answer: {
+    focus: FocusPayload;
+    persona_id: string | null;
+    rationale: string;
+  };
+  scores: {
+    focus_match: number;
+    persona_match: number | null;
+    overall: number;
+  };
+  labels: {
+    focus: string;
+    persona: string;
+  };
+};
+
 export type ChatResponse = {
   response: string;
   sources: TavilySource[];
   intent: IntentPayload | null;
   ad: AdPayload | null;
   focus: FocusPayload | null;
+  alignment: AlignmentPayload | null;
   tokens: TokenUsage | null;
   metrics: SessionMetrics | null;
   trace: TracePayload | null;
@@ -78,8 +105,8 @@ export type ChatResponse = {
 
 export type DatasetEntry = {
   user_input: string;
-  references: unknown[];
-  synthesizer_name: string;
+  persona_id?: string;
+  persona_role?: string;
   focus: FocusPayload;
   intent: IntentPayload & { rationale?: string };
 };

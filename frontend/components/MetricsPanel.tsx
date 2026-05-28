@@ -24,6 +24,14 @@ function formatTier(tier: string): string {
   return tier.charAt(0).toUpperCase() + tier.slice(1).replace(/-/g, " ");
 }
 
+function queryAdRate(metrics: SessionMetrics): number {
+  if (metrics.query_ad_rate != null) {
+    return metrics.query_ad_rate;
+  }
+  if (metrics.total_queries <= 0) return 0;
+  return Math.round((metrics.ads_served / metrics.total_queries) * 1000) / 10;
+}
+
 export default function MetricsPanel({
   metrics,
   onReset,
@@ -33,8 +41,15 @@ export default function MetricsPanel({
   const impressionDisplay =
     last != null ? IMPRESSION_STATE_LABEL[last.state] : null;
   const queries = metrics?.total_queries ?? 0;
-  const fillRate = metrics?.fill_rate ?? 0;
+  const served = metrics?.ads_served ?? 0;
+  const noFill = metrics?.no_fill ?? 0;
+  const blocked = metrics?.blocked ?? 0;
+  const bidsAttempted =
+    metrics?.bids_attempted ?? served + noFill;
+  const queryAdPct = metrics != null ? queryAdRate(metrics) : 0;
+  const bidFillPct = metrics?.fill_rate ?? 0;
   const hasData = queries > 0;
+  const hasBids = bidsAttempted > 0;
 
   return (
     <ImpactPanel
@@ -47,7 +62,7 @@ export default function MetricsPanel({
         <div className="flex items-center gap-2 text-foreground-muted">
           <BarChart3 className="h-4 w-4 shrink-0" aria-hidden />
           <span className="text-xs font-medium uppercase tracking-wider">
-            Fill rate
+            Query ad rate
           </span>
         </div>
         <button
@@ -70,16 +85,26 @@ export default function MetricsPanel({
         <p
           className={`impact-stat ${hasData ? "text-accent" : "text-foreground-muted"}`}
         >
-          {hasData ? `${fillRate.toFixed(1)}%` : "—"}
+          {hasData ? `${queryAdPct.toFixed(1)}%` : "—"}
         </p>
         <p className="mt-1 text-xs text-foreground-muted">
           {hasData
-            ? `${metrics?.ads_served ?? 0} ads on ${queries} queries`
+            ? `${served} of ${queries} queries showed an ad`
             : "Metrics appear after your first query"}
         </p>
+        {hasBids ? (
+          <p className="mt-1 text-[11px] text-foreground-muted/90">
+            Bid fill {bidFillPct.toFixed(1)}% ({served}/{bidsAttempted} gated
+            requests)
+          </p>
+        ) : hasData && blocked > 0 ? (
+          <p className="mt-1 text-[11px] text-foreground-muted/90">
+            No bids yet — intent below gate on all queries
+          </p>
+        ) : null}
       </div>
 
-      <dl className="mt-4 grid grid-cols-3 gap-2 text-center text-xs">
+      <dl className="mt-4 grid grid-cols-2 gap-2 text-center text-xs sm:grid-cols-4">
         <div className="rounded-md bg-background-muted/60 py-2 ring-1 ring-panel-border/40">
           <dt className="text-foreground-muted">Queries</dt>
           <dd className="mt-0.5 font-mono text-base font-semibold tabular-nums text-foreground">
@@ -89,13 +114,19 @@ export default function MetricsPanel({
         <div className="rounded-md bg-success/10 py-2 ring-1 ring-success/25">
           <dt className="text-success/90">Served</dt>
           <dd className="mt-0.5 font-mono text-base font-semibold tabular-nums text-success">
-            {metrics?.ads_served ?? 0}
+            {served}
+          </dd>
+        </div>
+        <div className="rounded-md bg-warning/10 py-2 ring-1 ring-warning/25">
+          <dt className="text-warning/90">No fill</dt>
+          <dd className="mt-0.5 font-mono text-base font-semibold tabular-nums text-warning">
+            {noFill}
           </dd>
         </div>
         <div className="rounded-md bg-background-muted/60 py-2 ring-1 ring-panel-border/40">
           <dt className="text-foreground-muted">Blocked</dt>
           <dd className="mt-0.5 font-mono text-base font-semibold tabular-nums text-foreground">
-            {metrics?.blocked ?? 0}
+            {blocked}
           </dd>
         </div>
       </dl>

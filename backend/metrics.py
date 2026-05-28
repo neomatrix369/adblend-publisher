@@ -52,8 +52,20 @@ class SessionMetrics:
 
     @property
     def fill_rate(self) -> float:
+        """Bid fill: served / (served + no_fill). Excludes blocked (no bid)."""
         denom = self.ads_served + self.no_fill
         return round(self.ads_served / denom * 100, 1) if denom > 0 else 0.0
+
+    @property
+    def query_ad_rate(self) -> float:
+        """Share of all chat queries that showed an ad."""
+        if self.total_queries <= 0:
+            return 0.0
+        return round(self.ads_served / self.total_queries * 100, 1)
+
+    @property
+    def bids_attempted(self) -> int:
+        return self.ads_served + self.no_fill
 
     def to_dict(self) -> dict[str, Any]:
         payload: dict[str, Any] = {
@@ -61,7 +73,9 @@ class SessionMetrics:
             "ads_served": self.ads_served,
             "no_fill": self.no_fill,
             "blocked": self.blocked,
+            "bids_attempted": self.bids_attempted,
             "fill_rate": self.fill_rate,
+            "query_ad_rate": self.query_ad_rate,
         }
         if self.last_impression is not None:
             payload["last_impression"] = asdict(self.last_impression)

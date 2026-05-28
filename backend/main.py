@@ -17,6 +17,8 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
+from alignment import compute_alignment
+from answer_focus import classify_answer
 from claude_client import generate_response
 from intent import INTENT_GATE_THRESHOLD, score_intent
 from metrics import metrics as session_metrics
@@ -66,6 +68,8 @@ class ChatRequest(BaseModel):
     source: Literal["freeform", "dropdown"] = "freeform"
     intent: IntentPayload | None = None
     focus: Focus | None = None
+    persona_id: str | None = None
+    persona_role: str | None = None
     ads_enabled: bool = True
 
 
@@ -96,7 +100,9 @@ class SessionMetricsPayload(BaseModel):
     ads_served: int
     no_fill: int
     blocked: int
+    bids_attempted: int = 0
     fill_rate: float
+    query_ad_rate: float = 0.0
     last_impression: LastImpressionPayload | None = None
 
 
@@ -111,12 +117,43 @@ class TracePayload(BaseModel):
     calls: list[TraceCallPayload] = Field(default_factory=list)
 
 
+class AlignmentSidePayload(BaseModel):
+    persona_id: str | None = None
+    persona_role: str | None = None
+    focus: Focus = Field(default_factory=Focus)
+
+
+class AlignmentAnswerPayload(BaseModel):
+    focus: Focus = Field(default_factory=Focus)
+    persona_id: str | None = None
+    rationale: str = ""
+
+
+class AlignmentScoresPayload(BaseModel):
+    focus_match: float
+    persona_match: float | None = None
+    overall: float
+
+
+class AlignmentLabelsPayload(BaseModel):
+    focus: str
+    persona: str
+
+
+class AlignmentPayload(BaseModel):
+    question: AlignmentSidePayload
+    answer: AlignmentAnswerPayload
+    scores: AlignmentScoresPayload
+    labels: AlignmentLabelsPayload
+
+
 class ChatResponse(BaseModel):
     response: str
     sources: list[TavilySource] = Field(default_factory=list)
     intent: IntentPayload | None = None
     ad: AdPayload | None = None
     focus: Focus | None = None
+    alignment: AlignmentPayload | None = None
     tokens: TokenUsage | None = None
     metrics: SessionMetricsPayload | None = None
     trace: TracePayload | None = None
@@ -220,7 +257,26 @@ async def chat(req: ChatRequest):
                     generate_response, req.message, context
                 )
 
-            tokens = _merge_tokens(TokenUsage(**chat_tokens), intent_tokens)
+            with trace.record("claude.answer_align"):
+                answer_data, align_tokens = await asyncio.to_thread(
+                    classify_answer, req.message, response_text
+                )
+
+            alignment_raw = compute_alignment(
+                question_persona_id=req.persona_id,
+                question_persona_role=req.persona_role,
+                question_focus=focus.model_dump(),
+                answer_persona_id=answer_data.get("persona_id"),
+                answer_focus=answer_data.get("focus"),
+                answer_rationale=answer_data.get("rationale"),
+            )
+            alignment = AlignmentPayload(**alignment_raw)
+
+            tokens = _merge_tokens(
+                TokenUsage(**chat_tokens),
+                intent_tokens,
+                TokenUsage(**align_tokens),
+            )
     except ValueError as exc:
         raise HTTPException(
             status_code=503,
@@ -263,6 +319,7 @@ async def chat(req: ChatRequest):
         intent=intent,
         ad=ad,
         focus=focus,
+        alignment=alignment,
         tokens=tokens,
         metrics=metrics_payload,
         trace=trace_payload,

@@ -12,6 +12,7 @@ import {
   postDemoReset,
   postMetricsReset,
   type AdPayload,
+  type AlignmentPayload,
   type DatasetEntry,
   type FocusPayload,
   type IntentPayload,
@@ -28,6 +29,7 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [intent, setIntent] = useState<IntentPayload | null>(null);
   const [focus, setFocus] = useState<FocusPayload | null>(null);
+  const [alignment, setAlignment] = useState<AlignmentPayload | null>(null);
   const [ad, setAd] = useState<AdPayload | null>(null);
   const [tokens, setTokens] = useState<TokenUsage | null>(null);
   const [metrics, setMetrics] = useState<SessionMetrics | null>(null);
@@ -86,11 +88,14 @@ export default function Home() {
                 rationale: selectedEntry.intent.rationale ?? null,
               },
               focus: selectedEntry.focus,
+              persona_id: selectedEntry.persona_id ?? null,
+              persona_role: selectedEntry.persona_role ?? null,
             }
           : {}),
       });
       setIntent(data.intent);
       setFocus(data.focus);
+      setAlignment(data.alignment);
       setAd(data.ad);
       setTokens(data.tokens);
       if (data.metrics) {
@@ -137,6 +142,7 @@ export default function Home() {
       setSelectedEntry(null);
       setIntent(null);
       setFocus(null);
+      setAlignment(null);
       setAd(null);
       setTokens(null);
       setTrace(null);
@@ -145,7 +151,9 @@ export default function Home() {
         ads_served: 0,
         no_fill: 0,
         blocked: 0,
+        bids_attempted: 0,
         fill_rate: 0,
+        query_ad_rate: 0,
         last_impression: null,
       });
       setIsResettingDemo(false);
@@ -164,7 +172,9 @@ export default function Home() {
         ads_served: 0,
         no_fill: 0,
         blocked: 0,
+        bids_attempted: 0,
         fill_rate: 0,
+        query_ad_rate: 0,
         last_impression: null,
       });
     } finally {
@@ -267,6 +277,7 @@ export default function Home() {
           <SidePanel
             intent={intent}
             focus={focus}
+            alignment={alignment}
             ad={ad}
             tokens={tokens}
             metrics={metrics}

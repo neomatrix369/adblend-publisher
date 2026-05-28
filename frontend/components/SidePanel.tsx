@@ -1,11 +1,13 @@
 import { ChevronDown, SlidersHorizontal } from "lucide-react";
 
 import AdPlacementPanel from "@/components/AdPlacementPanel";
+import AlignmentPanel from "@/components/AlignmentPanel";
 import IntentPanel from "@/components/IntentPanel";
 import MetricsPanel from "@/components/MetricsPanel";
 import TracePanel from "@/components/TracePanel";
 import type {
   AdPayload,
+  AlignmentPayload,
   FocusPayload,
   IntentPayload,
   SessionMetrics,
@@ -16,6 +18,7 @@ import type {
 type SidePanelProps = {
   intent: IntentPayload | null;
   focus: FocusPayload | null;
+  alignment: AlignmentPayload | null;
   ad: AdPayload | null;
   tokens: TokenUsage | null;
   metrics: SessionMetrics | null;
@@ -31,6 +34,7 @@ type SidePanelProps = {
 export default function SidePanel({
   intent,
   focus,
+  alignment,
   ad,
   tokens,
   metrics,
@@ -66,6 +70,7 @@ export default function SidePanel({
         aria-label="Publisher value flow"
       >
         <IntentPanel intent={intent} focus={focus} isLoading={isLoading} />
+        <AlignmentPanel alignment={alignment} isLoading={isLoading} />
         <AdPlacementPanel
           ad={ad}
           intent={intent}

@@ -97,7 +97,9 @@ export default function Dropdown({
           >
             {items.map((entry) => (
               <option key={entry.user_input} value={entry.user_input}>
-                {truncate(entry.user_input)}
+                {entry.persona_role
+                  ? `[${entry.persona_role}] ${truncate(entry.user_input, 56)}`
+                  : truncate(entry.user_input)}
               </option>
             ))}
           </optgroup>

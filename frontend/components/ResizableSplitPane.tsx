@@ -21,7 +21,6 @@ function clamp(value: number, min: number, max: number): number {
 }
 
 function readStoredWidth(): number {
-  if (typeof window === "undefined") return DEFAULT_SIDE_WIDTH;
   const raw = localStorage.getItem(STORAGE_KEY);
   const parsed = raw ? Number(raw) : Number.NaN;
   return Number.isFinite(parsed) ? parsed : DEFAULT_SIDE_WIDTH;
@@ -38,12 +37,13 @@ export default function ResizableSplitPane({
 }: ResizableSplitPaneProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const dragRef = useRef<{ startX: number; startWidth: number } | null>(null);
-  const [sideWidth, setSideWidth] = useState(() => {
-    const stored = readStoredWidth();
-    return clamp(stored, MIN_SIDE_WIDTH, 520);
-  });
+  const [sideWidth, setSideWidth] = useState(DEFAULT_SIDE_WIDTH);
   const [maxSideWidth, setMaxSideWidth] = useState(520);
   const [isLargeLayout, setIsLargeLayout] = useState(false);
+
+  useEffect(() => {
+    setSideWidth(clamp(readStoredWidth(), MIN_SIDE_WIDTH, 520));
+  }, []);
 
   const computeMaxSideWidth = (containerWidth: number): number =>
     Math.max(

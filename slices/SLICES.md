@@ -23,6 +23,8 @@ score ≥ 0.7 + ads on → [Slice 3] Thrad bid → ad in side panel
 [Slice 6] Metrics panel updates · [Slice 7] Trace spans
         ↓
 [Slice 9] Publisher UI — layout, scroll, demo controls
+        ↓
+[Slice 10] Persona + focus on question; classify answer; alignment score in UI
 ```
 
 ---
@@ -40,9 +42,10 @@ score ≥ 0.7 + ads on → [Slice 3] Thrad bid → ad in side panel
 | 7 | Overmind Trace | Could | 20 min | done | `feat/slice-07-overmind-trace` |
 | 8 | Polish + Demo Prep (remainder) | Could | 10 min | queued | — |
 | 9 | Frontend UI/UX + Demo Polish | Should | ~60 min | **done** | `feat/slice-09-frontend-ux` |
+| 10 | Persona & Answer Alignment | Should | ~75 min | **in progress** | `feat/slice-10-persona-alignment` |
 
 **Must Have total: ~95 min**  
-**Should Have total: ~95 min** (includes slice 9)  
+**Should Have total: ~170 min** (includes slices 9–10)  
 **Could Have total: ~30 min** (slice 7 done; slice 8 remainder only)
 
 ### Slice 8 vs 9 (plan change)
@@ -56,6 +59,8 @@ Originally slice 8 covered demo polish (cache, reset, toggles, loading) and slic
 **Slice 8** now only tracks what is still open: error-state hardening and final pre-demo checklist — see [`slice-08-polish.md`](slice-08-polish.md).
 
 **Slice 9** spec: [`slice-09-frontend-ux.md`](slice-09-frontend-ux.md)
+
+**Slice 10** spec: [`slice-10-persona-alignment.md`](slice-10-persona-alignment.md) — restore personas, classify assistant replies, show question↔answer trait match %.
 
 ---
 
@@ -82,7 +87,9 @@ Originally slice 8 covered demo polish (cache, reset, toggles, loading) and slic
 ```json
 {
   "user_input": "...",
-  "references": [...],
+  "persona_id": "current-student",
+  "persona_role": "Current Student",
+  "references": [],
   "synthesizer_name": "...",
   "focus": {
     "category": "AI tooling",
@@ -96,6 +103,8 @@ Originally slice 8 covered demo polish (cache, reset, toggles, loading) and slic
   }
 }
 ```
+
+Top-level `personas[]` (id, role, description) returns with `GET /dataset` from **Slice 10**.
 
 ---
 
