@@ -88,4 +88,4 @@ End-to-end skeleton running locally. User types a message, gets a mock response.
 - [ ] All three side panel sections visible (empty)
 - [ ] Dropdown renders (empty options)
 - [ ] No console errors
-- [ ] Backend running at `localhost:8000`
+- [ ] Backend running at `localhost:8001`

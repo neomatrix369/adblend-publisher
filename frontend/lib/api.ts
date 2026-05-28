@@ -3,8 +3,15 @@ export type ChatRequest = {
   source: "freeform" | "dropdown";
 };
 
+export type TavilySource = {
+  title: string;
+  url: string;
+  content: string;
+};
+
 export type ChatResponse = {
   response: string;
+  sources: TavilySource[];
   intent: null;
   ad: null;
   metrics: null;
@@ -21,7 +28,14 @@ export async function postChat(body: ChatRequest): Promise<ChatResponse> {
   });
 
   if (!res.ok) {
-    throw new Error(`Chat request failed: ${res.status}`);
+    let detail = `Chat request failed: ${res.status}`;
+    try {
+      const body = (await res.json()) as { detail?: string };
+      if (body.detail) detail = body.detail;
+    } catch {
+      /* ignore parse errors */
+    }
+    throw new Error(detail);
   }
 
   return res.json();

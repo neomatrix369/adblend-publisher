@@ -28,15 +28,20 @@ export default function Home() {
       });
       setMessages((prev) => [
         ...prev,
-        { role: "assistant", content: data.response },
+        {
+          role: "assistant",
+          content: data.response,
+          sources: data.sources?.length ? data.sources : undefined,
+        },
       ]);
-    } catch {
+    } catch (err) {
+      const detail =
+        err instanceof Error ? err.message : "Unknown error";
       setMessages((prev) => [
         ...prev,
         {
           role: "assistant",
-          content:
-            "Could not reach the API. Start the backend (port 8001) and restart `npm run dev` if you changed env.",
+          content: `Could not reach the API (${detail}). Start the backend on port 8001, set keys in the repo-root .env, and restart npm run dev if you changed env.`,
         },
       ]);
     } finally {

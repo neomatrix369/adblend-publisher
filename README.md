@@ -2,7 +2,7 @@
 
 Hackathon demo for **Cursor × Thrad · London · 28 May 2026** (Track 2 — Sell-Side & Measurement).
 
-Slice 1 provides a local scaffold: Next.js UI + FastAPI mock `/chat` endpoint. No external API keys required yet.
+Slice 1 scaffolded the UI; **Slice 2** wires `/chat` to Tavily search + Claude for grounded answers. API keys required (see `.env.example`).
 
 ## Prerequisites
 
@@ -18,6 +18,7 @@ cd backend
 python -m venv .venv
 source .venv/bin/activate   # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
+# Keys: copy repo-root .env from ../.env.example, or backend/.env
 uvicorn main:app --reload --port 8001
 ```
 
@@ -36,14 +37,16 @@ Open [http://localhost:3000](http://localhost:3000) (use `localhost`, not `127.0
 
 By default the frontend calls `/api/*`, which Next.js proxies to the backend on port **8001** (see `frontend/next.config.ts`). This avoids browser CORS issues.
 
-## Slice 1 exit criteria
+## Slice progress
 
-- [ ] App loads at `localhost:3000`
-- [ ] Type a message → mock response appears in chat
-- [ ] Intent, Ad, and Metrics side panels visible (placeholders)
-- [ ] Dropdown renders (empty options)
-- [ ] Backend running at `localhost:8001`
-- [ ] No browser console errors during normal send flow
+Track status in [`slices/PROGRESS.md`](slices/PROGRESS.md).
+
+## Slice 2 exit criteria (current)
+
+- [ ] `TAVILY_API_KEY` and `ANTHROPIC_API_KEY` set in `backend/.env`
+- [ ] Type a question → grounded Claude response (not mock)
+- [ ] Source links appear under the assistant message (“Powered by Tavily”)
+- [ ] `/health` reports both keys configured
 
 ## Project layout
 

@@ -1,4 +1,7 @@
 # AdBlend — Slice Plan
+
+**Progress:** see [`PROGRESS.md`](PROGRESS.md) for done / in-progress / queued status.
+
 **Hackathon:** Cursor × Thrad · London · 28 May 2026  
 **Track:** 2 — Sell-Side & Measurement (Publisher side)  
 **Stack:** Next.js/React (TypeScript) · FastAPI (Python) · Thrad · Tavily · Claude

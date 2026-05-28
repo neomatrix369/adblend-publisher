@@ -2,9 +2,12 @@
 
 import { FormEvent, useRef, useEffect } from "react";
 
+import type { TavilySource } from "@/lib/api";
+
 export type Message = {
   role: "user" | "assistant";
   content: string;
+  sources?: TavilySource[];
 };
 
 type ChatPanelProps = {
@@ -38,19 +41,47 @@ export default function ChatPanel({
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {messages.length === 0 && (
           <p className="text-sm text-text-muted">
-            Send a message to try the mock publisher flow.
+            Send a message — answers are grounded with Tavily search + Claude.
           </p>
         )}
         {messages.map((msg, i) => (
           <div
             key={i}
-            className={`max-w-[85%] rounded-lg px-4 py-3 text-sm ${
-              msg.role === "user"
-                ? "ml-auto bg-accent/20 text-foreground"
-                : "mr-auto border border-panel-border bg-[#14141a] text-foreground"
+            className={`max-w-[85%] ${
+              msg.role === "user" ? "ml-auto" : "mr-auto"
             }`}
           >
-            {msg.content}
+            <div
+              className={`rounded-lg px-4 py-3 text-sm ${
+                msg.role === "user"
+                  ? "bg-accent/20 text-foreground"
+                  : "border border-panel-border bg-[#14141a] text-foreground"
+              }`}
+            >
+              {msg.content}
+            </div>
+            {msg.role === "assistant" && msg.sources && msg.sources.length > 0 && (
+              <div className="mt-2 space-y-1">
+                <p className="text-xs text-text-muted">
+                  Powered by{" "}
+                  <span className="text-accent">Tavily</span>
+                </p>
+                <ul className="space-y-1 text-xs text-text-muted">
+                  {msg.sources.map((source) => (
+                    <li key={source.url}>
+                      <a
+                        href={source.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-accent/90 hover:text-accent hover:underline"
+                      >
+                        {source.title || source.url}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
         ))}
         <div ref={bottomRef} />
