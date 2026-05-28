@@ -82,7 +82,11 @@ export default function SidePanel({ intent, focus, ad }: SidePanelProps) {
           </div>
         ) : (
           <p className="mt-3 text-xs text-text-muted">
-            No placement — intent below threshold (0.70)
+            {intent?.tier === "off-topic"
+              ? "No placement — off-topic (outside chatbot domain)"
+              : intent != null
+                ? `No placement — score ${intent.score.toFixed(2)} below gate (0.70)`
+                : "No placement — send a message to score intent"}
           </p>
         )}
       </section>

@@ -126,8 +126,8 @@ class ChatRequest(BaseModel):
 
 ## Done When
 
-- [ ] Dropdown loads all questions grouped by tier (colour-coded)
-- [ ] Selecting high-intent question → ad appears (no extra Claude call for scoring)
-- [ ] Selecting off-topic question → no ad, gate reason shown
-- [ ] Freeform typing still uses live intent scoring (unchanged)
-- [ ] Tier badge in intent panel shows correct value for both paths
+- [x] Dropdown loads all questions grouped by tier (colour-coded)
+- [x] Selecting high-intent question → ad appears (no extra Claude call for scoring)
+- [x] Selecting off-topic question → no ad, gate reason shown
+- [x] Freeform typing still uses live intent scoring (unchanged)
+- [x] Tier badge in intent panel shows correct value for both paths

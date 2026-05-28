@@ -1,137 +1,1339 @@
 {
-  "personas": [
+  "entries": [
     {
-      "id": "current-student",
-      "role": "Current Student",
-      "description": "Currently enrolled in school, navigating financial aid and loan options. Includes informal queries.",
-      "questions": [
-        { "text": "How much can I borrow for my degree program?", "focus": "General" },
-        { "text": "What's the difference between subsidized and unsubsidized loans?", "focus": "General" },
-        { "text": "When do I need to start repaying my loans?", "focus": "General" },
-        { "text": "Can I use loans for living expenses?", "focus": "General" },
-        { "text": "What is the Student Aid Index (SAI), and how does it affect my eligibility for federal student aid?", "focus": "FAFSA" },
-        { "text": "Can you explain how my academic calendar and payment periods influence when I receive my federal student loan disbursements?", "focus": "Loan Disbursements" },
-        { "text": "What are the key differences between Direct Subsidized and Unsubsidized Loans, and which one is more suitable for my situation?", "focus": "Loan Types" },
-        { "text": "Are veterinary clinical experiences allowed to be included in standard term periods for financial aid purposes?", "focus": "Clinical Program Requirements" },
-        { "text": "Whaat are the condishuns under wich a program meassuring progress in credit-hours is considdred to have a non-term calender?", "focus": "Non-traditional Programs (Informal)" },
-        { "text": "so like if a student gettin Pell Grant in a clock-hour or non-term credit-hour program, and they finish more weeks or hours faster than scheduled, do that mean they get more Pell Grant money or the payment periods change or what happen with the Pell Grant disbursement?", "focus": "Pell Grant (Informal)" },
-        { "text": "Wut are the disbursment timing rules for Title IV funds in subscription-based programs and how does Volume 8, Chapter 3 provide guidance for clinical work in standard terms?", "focus": "Disbursement Rules (Informal)" },
-        { "text": "how volume 8 chapter 6 and volume 8 chapter 3 talk about nonstandard terms and direct loan rules for subscription-based and clinical work programs?", "focus": "Regulatory Guidance (Informal)" }
-      ]
+      "user_input": "How much can I borrow for my degree program?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "General"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
     },
     {
-      "id": "recent-graduate",
-      "role": "Recent Graduate",
-      "description": "Recently graduated, entering repayment phase. Often asks detailed, technical questions about regulations.",
-      "questions": [
-        { "text": "What are my repayment options after graduation?", "focus": "General" },
-        { "text": "How do income-driven repayment plans work?", "focus": "General" },
-        { "text": "Can I consolidate my federal student loans?", "focus": "General" },
-        { "text": "What happens during my grace period?", "focus": "General" },
-        { "text": "What are my repayment options for federal student loans after my grace period ends, and how do I choose the best one?", "focus": "Repayment Options" },
-        { "text": "I'm considering consolidating my federal student loans. What are the pros and cons, and how does the process work?", "focus": "Loan Consolidation" },
-        { "text": "My loan servicer is reporting missed payments from my grace period, but I thought payments weren't due yet. What should I do?", "focus": "Servicer Issues" },
-        { "text": "how do disbursement timing rules for federal student aid differ between clock-hour or non-term credit-hour programs and subscription-based programs, especially regarding when students become eligible for their next disbursement?", "focus": "Disbursement Timing" },
-        { "text": "What are the differences in disbursement timing requirements for federal student aid between clock-hour or non-term credit-hour programs and subscription-based programs?", "focus": "Disbursement Requirements" },
-        { "text": "How does the disbursement timing for federal student aid differ between standard clock-hour or non-term credit-hour programs and subscription-based programs, particularly regarding the requirements a student must meet before receiving subsequent disbursements?", "focus": "Disbursement Requirements" },
-        { "text": "How do the examples in Appendix A and Appendix B illustrate the differences in disbursement timing and eligibility requirements for students in clock-hour or non-term credit-hour programs versus subscription-based programs?", "focus": "Regulatory Examples" },
-        { "text": "How do the requirements for Pell Grant disbursement and calculation differ between clock-hour or non-term credit-hour programs and subscription-based academic calendars, and what are the implications for payment periods and academic progress measurement?", "focus": "Pell Grant Calculation" },
-        { "text": "How can borrowers address issues related to their student loan 'loan' when they experience lack of transparency, difficulty logging in, and poor customer service from lenders or servicers, especially in cases where there is little to no written confirmation of forbearance status and long wait times for assistance?", "focus": "Servicer Transparency" },
-        { "text": "How does the illegal student loan reporting after the Department of Education abolishment relate to the data breach involving personal info of students, and what rights are protected under the Department of Education's actions?", "focus": "Data Privacy & Legal" },
-        { "text": "How does the failure of XXXX and XXXX to conduct proper reinvestigations under the FCRA, as highlighted by the CFPB lawsuit, relate to the misconduct and errors made by XXXX in the transfer and handling of the account to Nelnet, and what implications does this have for borrower rights under the FCRA?", "focus": "FCRA & Borrower Rights" },
-        { "text": "How does the CFPB's involvement relate to the legal violations and improper reporting of student loan data by Nelnet and associated entities, as described in the context?", "focus": "CFPB & Legal Violations" },
-        { "text": "How does NelNet's repeated failure to process auto-debit payments, despite confirmation, relate to borrower rights and potential violations of privacy laws?", "focus": "Payment Processing Issues" }
-      ]
+      "user_input": "What's the difference between subsidized and unsubsidized loans?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "General"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
     },
     {
-      "id": "parent-family",
-      "role": "Parent/Family",
-      "description": "Parent or family member helping with education financing.",
-      "questions": [
-        { "text": "Should I take a PLUS loan or help my child borrow?", "focus": "General" },
-        { "text": "What are the credit requirements for Parent PLUS loans?", "focus": "General" },
-        { "text": "How can I help my child understand their loan responsibilities?", "focus": "General" },
-        { "text": "What tax benefits are available for education expenses?", "focus": "General" },
-        { "text": "As a parent, what information do I need to provide on the FAFSA, and how does my income affect my child's financial aid?", "focus": "FAFSA" },
-        { "text": "What are the eligibility requirements and responsibilities for taking out a Direct PLUS Loan for my child's education?", "focus": "PLUS Loans" },
-        { "text": "I'm concerned about the privacy of my personal and financial data related to my child's student loans. What protections are in place, and what if there's a data breach?", "focus": "Data Privacy" }
-      ]
+      "user_input": "When do I need to start repaying my loans?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "General"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
     },
     {
-      "id": "active-borrower",
-      "role": "Active Borrower",
-      "description": "Currently repaying loans, managing payments.",
-      "questions": [
-        { "text": "Can I lower my monthly payment amount?", "focus": "General" },
-        { "text": "How do I apply for loan forgiveness programs?", "focus": "General" },
-        { "text": "What should I do if I'm having trouble making payments?", "focus": "General" },
-        { "text": "Can I pay off my loans early without penalties?", "focus": "General" },
-        { "text": "My monthly student loan payments have increased unexpectedly. How can I understand the reason for this change and explore options to lower them?", "focus": "Payment Management" },
-        { "text": "I've made payments, but my loan balance doesn't seem to be decreasing, or payments aren't being applied correctly. How can I get a full accounting of my loan and resolve these discrepancies?", "focus": "Loan Accounting" },
-        { "text": "My credit score was negatively impacted due to a reported delinquency, but I believe it was an error by my servicer. What steps can I take to dispute this and have it corrected?", "focus": "Credit Reporting" }
-      ]
+      "user_input": "Can I use loans for living expenses?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "General"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
     },
     {
-      "id": "public-service",
-      "role": "Public Service Worker",
-      "description": "Working in public service, eligible for PSLF or advocating for others.",
-      "questions": [
-        { "text": "Do I qualify for Public Service Loan Forgiveness?", "focus": "General" },
-        { "text": "How do I certify my employment for PSLF?", "focus": "General" },
-        { "text": "What payment plan is best for PSLF?", "focus": "General" },
-        { "text": "How many qualifying payments have I made?", "focus": "General" },
-        { "text": "What are the specific criteria for Public Service Loan Forgiveness (PSLF), and how do I ensure my employment qualifies?", "focus": "PSLF Eligibility" },
-        { "text": "How do I certify my employment for PSLF, and what should I do if my servicer isn't correctly tracking my qualifying payments?", "focus": "PSLF Certification" },
-        { "text": "Can you explain the process for consolidating loans for PSLF, and how does it affects my payment count?", "focus": "PSLF Consolidation" },
-        { "text": "As a consumer rights advocate, how should I address the issue of re-amortization delays for federal student loans after the COVID-19 forbearance ended, especially considering the significant increase in monthly payments from $180.00 to $360.00 and the potential financial hardship for many borrowers?", "focus": "Advocacy & Hardship" }
-      ]
+      "user_input": "What is the Student Aid Index (SAI), and how does it affect my eligibility for federal student aid?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "FAFSA"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
     },
     {
-      "id": "financial-difficulty",
-      "role": "Financial Difficulty",
-      "description": "Experiencing financial hardship with loan payments.",
-      "questions": [
-        { "text": "I can't make my loan payments, what are my options?", "focus": "General" },
-        { "text": "How do I apply for deferment or forbearance?", "focus": "General" },
-        { "text": "What happens if I default on my federal student loans?", "focus": "General" },
-        { "text": "How can I rehabilitate defaulted loans?", "focus": "General" },
-        { "text": "I'm struggling to make my student loan payments. What are my options for temporary relief, such as forbearance or deferment?", "focus": "Financial Hardship" },
-        { "text": "What are the consequences of defaulting on a federal student loan, and what steps can I take to rehabilitate or resolve a defaulted loan?", "focus": "Loan Default" },
-        { "text": "I believe I qualify for a loan discharge due to school closure or misrepresentation. What is the process for applying for borrower defense to repayment?", "focus": "Loan Discharge" }
-      ]
+      "user_input": "Can you explain how my academic calendar and payment periods influence when I receive my federal student loan disbursements?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "Loan Disbursements"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
     },
     {
-      "id": "general-user",
-      "role": "General User",
-      "description": "Seeking quick answers and general information about federal student aid.",
-      "questions": [
-        { "text": "What types of federal student loans are available?", "focus": "Basic Info" },
-        { "text": "How do I apply for federal student aid?", "focus": "Application Process" },
-        { "text": "What is the difference between federal and private student loans?", "focus": "Loan Comparison" },
-        { "text": "Where can I find my loan servicer contact information?", "focus": "Servicer Info" },
-        { "text": "What should I do if I'm having trouble with my loan servicer?", "focus": "Servicer Issues" },
-        { "text": "How can I check my federal student loan balance and payment history?", "focus": "Account Access" },
-        { "text": "What resources are available for understanding my repayment options?", "focus": "Resources" },
-        { "text": "How is the Pell Grant award calculated for students enrolled in subscription-based academic calendars?", "focus": "Pell Grant" },
-        { "text": "What is the issue with Aidvantage in the borrower's complaint?", "focus": "Servicer Issues" },
-        { "text": "How does FERPA protect student loan borrowers' personal data?", "focus": "Data Privacy" },
-        { "text": "What concerns does the borrower have regarding Nelnet's communication about their student loan issuer?", "focus": "Communication Issues" },
-        { "text": "How does the violation of the FCRA relate to the improper reporting and collection of student loans after the Department of Education's abolishment?", "focus": "Legal Protections" }
-      ]
+      "user_input": "What are the key differences between Direct Subsidized and Unsubsidized Loans, and which one is more suitable for my situation?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "Loan Types"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
     },
     {
-      "id": "disabled-student",
-      "role": "Disabled Student",
-      "description": "Seeking accessible information and support options.",
-      "questions": [
-        { "text": "What loan discharge options are available for students with disabilities?", "focus": "Disability Discharge" },
-        { "text": "How do I apply for Total and Permanent Disability discharge?", "focus": "TPD Discharge" },
-        { "text": "What documentation is needed to prove disability for loan discharge?", "focus": "Documentation" },
-        { "text": "Are there special repayment options for borrowers with disabilities?", "focus": "Repayment Options" },
-        { "text": "What accommodations are available for borrowers who need accessible communication formats?", "focus": "Accessibility" },
-        { "text": "How can I get help completing loan forms if I have a disability that affects my ability to process paperwork?", "focus": "Form Assistance" },
-        { "text": "What happens to my loans if my disability status changes after receiving a discharge?", "focus": "Status Changes" }
-      ]
+      "user_input": "Are veterinary clinical experiences allowed to be included in standard term periods for financial aid purposes?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "Clinical Program Requirements"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
+    },
+    {
+      "user_input": "Whaat are the condishuns under wich a program meassuring progress in credit-hours is considdred to have a non-term calender?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "Non-traditional Programs (Informal)"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
+    },
+    {
+      "user_input": "so like if a student gettin Pell Grant in a clock-hour or non-term credit-hour program, and they finish more weeks or hours faster than scheduled, do that mean they get more Pell Grant money or the payment periods change or what happen with the Pell Grant disbursement?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "Pell Grant (Informal)"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
+    },
+    {
+      "user_input": "Wut are the disbursment timing rules for Title IV funds in subscription-based programs and how does Volume 8, Chapter 3 provide guidance for clinical work in standard terms?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "Disbursement Rules (Informal)"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
+    },
+    {
+      "user_input": "how volume 8 chapter 6 and volume 8 chapter 3 talk about nonstandard terms and direct loan rules for subscription-based and clinical work programs?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "Regulatory Guidance (Informal)"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
+    },
+    {
+      "user_input": "What are my repayment options after graduation?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "General"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
+    },
+    {
+      "user_input": "How do income-driven repayment plans work?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "General"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
+    },
+    {
+      "user_input": "Can I consolidate my federal student loans?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "General"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
+    },
+    {
+      "user_input": "What happens during my grace period?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "General"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
+    },
+    {
+      "user_input": "What are my repayment options for federal student loans after my grace period ends, and how do I choose the best one?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "Repayment Options"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
+    },
+    {
+      "user_input": "I'm considering consolidating my federal student loans. What are the pros and cons, and how does the process work?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "Loan Consolidation"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
+    },
+    {
+      "user_input": "My loan servicer is reporting missed payments from my grace period, but I thought payments weren't due yet. What should I do?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "Servicer Issues"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
+    },
+    {
+      "user_input": "how do disbursement timing rules for federal student aid differ between clock-hour or non-term credit-hour programs and subscription-based programs, especially regarding when students become eligible for their next disbursement?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "Disbursement Timing"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
+    },
+    {
+      "user_input": "What are the differences in disbursement timing requirements for federal student aid between clock-hour or non-term credit-hour programs and subscription-based programs?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "Disbursement Requirements"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
+    },
+    {
+      "user_input": "How does the disbursement timing for federal student aid differ between standard clock-hour or non-term credit-hour programs and subscription-based programs, particularly regarding the requirements a student must meet before receiving subsequent disbursements?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "Disbursement Requirements"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
+    },
+    {
+      "user_input": "How do the examples in Appendix A and Appendix B illustrate the differences in disbursement timing and eligibility requirements for students in clock-hour or non-term credit-hour programs versus subscription-based programs?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "Regulatory Examples"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
+    },
+    {
+      "user_input": "How do the requirements for Pell Grant disbursement and calculation differ between clock-hour or non-term credit-hour programs and subscription-based academic calendars, and what are the implications for payment periods and academic progress measurement?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "Pell Grant Calculation"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
+    },
+    {
+      "user_input": "How can borrowers address issues related to their student loan 'loan' when they experience lack of transparency, difficulty logging in, and poor customer service from lenders or servicers, especially in cases where there is little to no written confirmation of forbearance status and long wait times for assistance?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "Servicer Transparency"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
+    },
+    {
+      "user_input": "How does the illegal student loan reporting after the Department of Education abolishment relate to the data breach involving personal info of students, and what rights are protected under the Department of Education's actions?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "Data Privacy & Legal"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
+    },
+    {
+      "user_input": "How does the failure of XXXX and XXXX to conduct proper reinvestigations under the FCRA, as highlighted by the CFPB lawsuit, relate to the misconduct and errors made by XXXX in the transfer and handling of the account to Nelnet, and what implications does this have for borrower rights under the FCRA?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "FCRA & Borrower Rights"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
+    },
+    {
+      "user_input": "How does the CFPB's involvement relate to the legal violations and improper reporting of student loan data by Nelnet and associated entities, as described in the context?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "CFPB & Legal Violations"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
+    },
+    {
+      "user_input": "How does NelNet's repeated failure to process auto-debit payments, despite confirmation, relate to borrower rights and potential violations of privacy laws?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "Payment Processing Issues"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
+    },
+    {
+      "user_input": "Should I take a PLUS loan or help my child borrow?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "General"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
+    },
+    {
+      "user_input": "What are the credit requirements for Parent PLUS loans?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "General"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
+    },
+    {
+      "user_input": "How can I help my child understand their loan responsibilities?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "General"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
+    },
+    {
+      "user_input": "What tax benefits are available for education expenses?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "General"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
+    },
+    {
+      "user_input": "As a parent, what information do I need to provide on the FAFSA, and how does my income affect my child's financial aid?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "FAFSA"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
+    },
+    {
+      "user_input": "What are the eligibility requirements and responsibilities for taking out a Direct PLUS Loan for my child's education?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "PLUS Loans"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
+    },
+    {
+      "user_input": "I'm concerned about the privacy of my personal and financial data related to my child's student loans. What protections are in place, and what if there's a data breach?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "Data Privacy"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
+    },
+    {
+      "user_input": "Can I lower my monthly payment amount?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "General"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
+    },
+    {
+      "user_input": "How do I apply for loan forgiveness programs?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "General"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
+    },
+    {
+      "user_input": "What should I do if I'm having trouble making payments?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "General"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
+    },
+    {
+      "user_input": "Can I pay off my loans early without penalties?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "General"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
+    },
+    {
+      "user_input": "My monthly student loan payments have increased unexpectedly. How can I understand the reason for this change and explore options to lower them?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "Payment Management"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
+    },
+    {
+      "user_input": "I've made payments, but my loan balance doesn't seem to be decreasing, or payments aren't being applied correctly. How can I get a full accounting of my loan and resolve these discrepancies?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "Loan Accounting"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
+    },
+    {
+      "user_input": "My credit score was negatively impacted due to a reported delinquency, but I believe it was an error by my servicer. What steps can I take to dispute this and have it corrected?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "Credit Reporting"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
+    },
+    {
+      "user_input": "Do I qualify for Public Service Loan Forgiveness?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "General"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
+    },
+    {
+      "user_input": "How do I certify my employment for PSLF?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "General"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
+    },
+    {
+      "user_input": "What payment plan is best for PSLF?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "General"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
+    },
+    {
+      "user_input": "How many qualifying payments have I made?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "General"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
+    },
+    {
+      "user_input": "What are the specific criteria for Public Service Loan Forgiveness (PSLF), and how do I ensure my employment qualifies?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "PSLF Eligibility"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
+    },
+    {
+      "user_input": "How do I certify my employment for PSLF, and what should I do if my servicer isn't correctly tracking my qualifying payments?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "PSLF Certification"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
+    },
+    {
+      "user_input": "Can you explain the process for consolidating loans for PSLF, and how does it affects my payment count?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "PSLF Consolidation"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
+    },
+    {
+      "user_input": "As a consumer rights advocate, how should I address the issue of re-amortization delays for federal student loans after the COVID-19 forbearance ended, especially considering the significant increase in monthly payments from $180.00 to $360.00 and the potential financial hardship for many borrowers?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "Advocacy & Hardship"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
+    },
+    {
+      "user_input": "I can't make my loan payments, what are my options?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "General"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
+    },
+    {
+      "user_input": "How do I apply for deferment or forbearance?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "General"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
+    },
+    {
+      "user_input": "What happens if I default on my federal student loans?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "General"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
+    },
+    {
+      "user_input": "How can I rehabilitate defaulted loans?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "General"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
+    },
+    {
+      "user_input": "I'm struggling to make my student loan payments. What are my options for temporary relief, such as forbearance or deferment?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "Financial Hardship"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
+    },
+    {
+      "user_input": "What are the consequences of defaulting on a federal student loan, and what steps can I take to rehabilitate or resolve a defaulted loan?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "Loan Default"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
+    },
+    {
+      "user_input": "I believe I qualify for a loan discharge due to school closure or misrepresentation. What is the process for applying for borrower defense to repayment?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "Loan Discharge"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
+    },
+    {
+      "user_input": "What types of federal student loans are available?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "Basic Info"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
+    },
+    {
+      "user_input": "How do I apply for federal student aid?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "Application Process"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
+    },
+    {
+      "user_input": "What is the difference between federal and private student loans?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "Loan Comparison"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
+    },
+    {
+      "user_input": "Where can I find my loan servicer contact information?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "Servicer Info"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
+    },
+    {
+      "user_input": "What should I do if I'm having trouble with my loan servicer?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "Servicer Issues"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
+    },
+    {
+      "user_input": "How can I check my federal student loan balance and payment history?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "Account Access"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
+    },
+    {
+      "user_input": "What resources are available for understanding my repayment options?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "Resources"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
+    },
+    {
+      "user_input": "How is the Pell Grant award calculated for students enrolled in subscription-based academic calendars?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "Pell Grant"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
+    },
+    {
+      "user_input": "What is the issue with Aidvantage in the borrower's complaint?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "Servicer Issues"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
+    },
+    {
+      "user_input": "How does FERPA protect student loan borrowers' personal data?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "Data Privacy"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
+    },
+    {
+      "user_input": "What concerns does the borrower have regarding Nelnet's communication about their student loan issuer?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "Communication Issues"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
+    },
+    {
+      "user_input": "How does the violation of the FCRA relate to the improper reporting and collection of student loans after the Department of Education's abolishment?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "Legal Protections"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
+    },
+    {
+      "user_input": "What loan discharge options are available for students with disabilities?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "Disability Discharge"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
+    },
+    {
+      "user_input": "How do I apply for Total and Permanent Disability discharge?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "TPD Discharge"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
+    },
+    {
+      "user_input": "What documentation is needed to prove disability for loan discharge?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "Documentation"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
+    },
+    {
+      "user_input": "Are there special repayment options for borrowers with disabilities?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "Repayment Options"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
+    },
+    {
+      "user_input": "What accommodations are available for borrowers who need accessible communication formats?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "Accessibility"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
+    },
+    {
+      "user_input": "How can I get help completing loan forms if I have a disability that affects my ability to process paperwork?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "Form Assistance"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
+    },
+    {
+      "user_input": "What happens to my loans if my disability status changes after receiving a discharge?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "Student financial aid",
+        "sub_category": "Status Changes"
+      },
+      "intent": {
+        "tier": "off-topic",
+        "score": 0.04,
+        "ad_eligible": false,
+        "rationale": "Student financial aid \u2014 outside chatbot domain"
+      }
+    },
+    {
+      "user_input": "Which vector database should I use for a production RAG system with 50M embeddings?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "AI tooling",
+        "sub_category": "vector databases"
+      },
+      "intent": {
+        "tier": "high",
+        "score": 0.92,
+        "ad_eligible": true,
+        "rationale": "Explicit production vendor selection"
+      }
+    },
+    {
+      "user_input": "Pinecone vs Weaviate Cloud for enterprise search \u2014 what are real costs at scale?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "AI tooling",
+        "sub_category": "vector databases"
+      },
+      "intent": {
+        "tier": "high",
+        "score": 0.85,
+        "ad_eligible": true,
+        "rationale": "Vendor comparison with pricing at scale"
+      }
+    },
+    {
+      "user_input": "Which SSP should we integrate with to maximise fill rate for our AI chatbot?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "AdTech",
+        "sub_category": "SSP integration"
+      },
+      "intent": {
+        "tier": "high",
+        "score": 0.88,
+        "ad_eligible": true,
+        "rationale": "Explicit SSP vendor selection for monetisation"
+      }
+    },
+    {
+      "user_input": "Which LLM API is most cost-effective for 10M queries/month in production?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "AI tooling",
+        "sub_category": "model selection"
+      },
+      "intent": {
+        "tier": "high",
+        "score": 0.82,
+        "ad_eligible": true,
+        "rationale": "Production LLM vendor selection with volume pricing"
+      }
+    },
+    {
+      "user_input": "What attribution platform should we use to track chatbot \u2192 paid subscription conversions?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "AdTech",
+        "sub_category": "attribution"
+      },
+      "intent": {
+        "tier": "high",
+        "score": 0.79,
+        "ad_eligible": true,
+        "rationale": "Attribution platform vendor selection"
+      }
+    },
+    {
+      "user_input": "How does LangChain compare to LlamaIndex for building RAG pipelines?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "AI tooling",
+        "sub_category": "RAG frameworks"
+      },
+      "intent": {
+        "tier": "medium",
+        "score": 0.55,
+        "ad_eligible": true,
+        "rationale": "Framework comparison without explicit buying signal"
+      }
+    },
+    {
+      "user_input": "What metrics matter most when measuring ROI of in-chat advertising?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "AdTech",
+        "sub_category": "measurement"
+      },
+      "intent": {
+        "tier": "medium",
+        "score": 0.62,
+        "ad_eligible": true,
+        "rationale": "Ad ROI measurement \u2014 commercial context"
+      }
+    },
+    {
+      "user_input": "Difference between text-embedding-3-small and text-embedding-3-large for semantic search?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "AI tooling",
+        "sub_category": "embeddings"
+      },
+      "intent": {
+        "tier": "medium",
+        "score": 0.48,
+        "ad_eligible": true,
+        "rationale": "Model comparison for production consideration"
+      }
+    },
+    {
+      "user_input": "How does intent-based targeting work in conversational AI contexts?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "AdTech",
+        "sub_category": "targeting"
+      },
+      "intent": {
+        "tier": "medium",
+        "score": 0.58,
+        "ad_eligible": true,
+        "rationale": "Ad targeting concepts with commercial relevance"
+      }
+    },
+    {
+      "user_input": "How does cosine similarity work in vector search?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "AI tooling",
+        "sub_category": "vector search"
+      },
+      "intent": {
+        "tier": "low",
+        "score": 0.15,
+        "ad_eligible": false,
+        "rationale": "Educational \u2014 no product decision"
+      }
+    },
+    {
+      "user_input": "Explain how retrieval-augmented generation works",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "AI tooling",
+        "sub_category": "RAG concepts"
+      },
+      "intent": {
+        "tier": "low",
+        "score": 0.12,
+        "ad_eligible": false,
+        "rationale": "Conceptual explanation \u2014 no vendor selection"
+      }
+    },
+    {
+      "user_input": "What is programmatic advertising and how does it work?",
+      "references": [],
+      "synthesizer_name": "manual",
+      "focus": {
+        "category": "AdTech",
+        "sub_category": "fundamentals"
+      },
+      "intent": {
+        "tier": "low",
+        "score": 0.22,
+        "ad_eligible": false,
+        "rationale": "Educational \u2014 no buying signal"
+      }
     }
   ]
 }

@@ -4,20 +4,52 @@ import { useCallback, useState } from "react";
 import ChatPanel, { type Message } from "@/components/ChatPanel";
 import Dropdown from "@/components/Dropdown";
 import SidePanel from "@/components/SidePanel";
-import { postChat, type AdPayload, type FocusPayload, type IntentPayload } from "@/lib/api";
+import {
+  postChat,
+  type AdPayload,
+  type DatasetEntry,
+  type FocusPayload,
+  type IntentPayload,
+} from "@/lib/api";
 
 export default function Home() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [dropdownValue, setDropdownValue] = useState("");
+  const [selectedEntry, setSelectedEntry] = useState<DatasetEntry | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [intent, setIntent] = useState<IntentPayload | null>(null);
   const [focus, setFocus] = useState<FocusPayload | null>(null);
   const [ad, setAd] = useState<AdPayload | null>(null);
 
+  const handleInputChange = useCallback(
+    (value: string) => {
+      setInput(value);
+      if (selectedEntry && value !== selectedEntry.user_input) {
+        setDropdownValue("");
+        setSelectedEntry(null);
+      }
+    },
+    [selectedEntry],
+  );
+
+  const handleDropdownChange = useCallback((value: string) => {
+    setDropdownValue(value);
+  }, []);
+
+  const handleSelectEntry = useCallback((entry: DatasetEntry | null) => {
+    setSelectedEntry(entry);
+    if (entry) {
+      setInput(entry.user_input);
+    }
+  }, []);
+
   const sendMessage = useCallback(async () => {
     const text = input.trim();
     if (!text || isLoading) return;
+
+    const fromDropdown =
+      selectedEntry != null && text === selectedEntry.user_input;
 
     const userMessage: Message = { role: "user", content: text };
     setMessages((prev) => [...prev, userMessage]);
@@ -27,7 +59,17 @@ export default function Home() {
     try {
       const data = await postChat({
         message: text,
-        source: dropdownValue ? "dropdown" : "freeform",
+        source: fromDropdown ? "dropdown" : "freeform",
+        ...(fromDropdown && selectedEntry
+          ? {
+              intent: {
+                score: selectedEntry.intent.score,
+                tier: selectedEntry.intent.tier,
+                ad_eligible: selectedEntry.intent.ad_eligible,
+              },
+              focus: selectedEntry.focus,
+            }
+          : {}),
       });
       setIntent(data.intent);
       setFocus(data.focus);
@@ -53,7 +95,7 @@ export default function Home() {
     } finally {
       setIsLoading(false);
     }
-  }, [input, isLoading, dropdownValue]);
+  }, [input, isLoading, selectedEntry]);
 
   return (
     <div className="flex h-screen flex-col bg-background text-foreground">
@@ -61,7 +103,11 @@ export default function Home() {
         <h1 className="shrink-0 text-lg font-semibold">
           <span className="text-accent">AdBlend</span> Publisher
         </h1>
-        <Dropdown value={dropdownValue} onChange={setDropdownValue} />
+        <Dropdown
+          value={dropdownValue}
+          onChange={handleDropdownChange}
+          onSelectEntry={handleSelectEntry}
+        />
         <button
           type="button"
           onClick={() => void sendMessage()}
@@ -77,7 +123,7 @@ export default function Home() {
           <ChatPanel
             messages={messages}
             input={input}
-            onInputChange={setInput}
+            onInputChange={handleInputChange}
             onSend={() => void sendMessage()}
             isLoading={isLoading}
           />

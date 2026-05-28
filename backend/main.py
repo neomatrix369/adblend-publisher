@@ -1,4 +1,5 @@
 import asyncio
+import json
 import logging
 import os
 from pathlib import Path
@@ -8,6 +9,7 @@ from dotenv import load_dotenv
 
 _BACKEND_DIR = Path(__file__).resolve().parent
 _REPO_ROOT = _BACKEND_DIR.parent
+_GOLDEN_DATASET_PATH = _REPO_ROOT / "data" / "golden_dataset.json"
 # Repo-root `.env` (user convention) then `backend/.env` overrides.
 load_dotenv(_REPO_ROOT / ".env")
 load_dotenv(_BACKEND_DIR / ".env")
@@ -103,6 +105,14 @@ def _resolve_intent(req: ChatRequest) -> tuple[IntentPayload, Focus]:
         sub_category=str(scored.get("sub_category") or ""),
     )
     return intent, focus
+
+
+@app.get("/dataset")
+async def get_dataset():
+    if not _GOLDEN_DATASET_PATH.is_file():
+        raise HTTPException(status_code=404, detail="Golden dataset not found")
+    with _GOLDEN_DATASET_PATH.open(encoding="utf-8") as f:
+        return json.load(f)
 
 
 @app.get("/health")

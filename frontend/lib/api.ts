@@ -40,8 +40,28 @@ export type ChatResponse = {
   metrics: null;
 };
 
+export type DatasetEntry = {
+  user_input: string;
+  references: unknown[];
+  synthesizer_name: string;
+  focus: FocusPayload;
+  intent: IntentPayload & { rationale?: string };
+};
+
+export type DatasetResponse = {
+  entries: DatasetEntry[];
+};
+
 // Default `/api` uses Next.js rewrite → backend (no CORS). Override for direct calls.
 const API_BASE = (process.env.NEXT_PUBLIC_API_URL ?? "/api").replace(/\/$/, "");
+
+export async function getDataset(): Promise<DatasetResponse> {
+  const res = await fetch(`${API_BASE}/dataset`);
+  if (!res.ok) {
+    throw new Error(`Dataset request failed: ${res.status}`);
+  }
+  return res.json();
+}
 
 export async function postChat(body: ChatRequest): Promise<ChatResponse> {
   const res = await fetch(`${API_BASE}/chat`, {
