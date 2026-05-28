@@ -1,12 +1,22 @@
-import type { AdPayload, FocusPayload, IntentPayload, TokenUsage } from "@/lib/api";
+import type {
+  AdPayload,
+  FocusPayload,
+  IntentPayload,
+  SessionMetrics,
+  TokenUsage,
+} from "@/lib/api";
 
 import IntentPanel from "@/components/IntentPanel";
+import MetricsPanel from "@/components/MetricsPanel";
 
 type SidePanelProps = {
   intent: IntentPayload | null;
   focus: FocusPayload | null;
   ad: AdPayload | null;
   tokens: TokenUsage | null;
+  metrics: SessionMetrics | null;
+  onResetMetrics: () => void;
+  isResettingMetrics: boolean;
 };
 
 export default function SidePanel({
@@ -14,6 +24,9 @@ export default function SidePanel({
   focus,
   ad,
   tokens,
+  metrics,
+  onResetMetrics,
+  isResettingMetrics,
 }: SidePanelProps) {
   return (
     <aside className="flex w-80 shrink-0 flex-col gap-4 border-l border-panel-border p-4">
@@ -66,25 +79,11 @@ export default function SidePanel({
         )}
       </section>
 
-      <section className="rounded-lg border border-panel-border p-4">
-        <h2 className="text-xs font-semibold uppercase tracking-wider text-text-muted">
-          Metrics
-        </h2>
-        <dl className="mt-3 space-y-2 text-sm">
-          <div className="flex justify-between gap-2">
-            <dt className="text-text-muted">Queries</dt>
-            <dd>0</dd>
-          </div>
-          <div className="flex justify-between gap-2">
-            <dt className="text-text-muted">Ads served</dt>
-            <dd>0</dd>
-          </div>
-          <div className="flex justify-between gap-2">
-            <dt className="text-text-muted">Fill rate</dt>
-            <dd>—</dd>
-          </div>
-        </dl>
-      </section>
+      <MetricsPanel
+        metrics={metrics}
+        onReset={onResetMetrics}
+        isResetting={isResettingMetrics}
+      />
     </aside>
   );
 }

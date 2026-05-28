@@ -37,6 +37,22 @@ export type AdPayload = {
   mock?: boolean;
 };
 
+export type LastImpression = {
+  state: "logged" | "no_fill" | "none";
+  tier: string;
+  score: number;
+  bid_won: boolean;
+};
+
+export type SessionMetrics = {
+  total_queries: number;
+  ads_served: number;
+  no_fill: number;
+  blocked: number;
+  fill_rate: number;
+  last_impression: LastImpression | null;
+};
+
 export type ChatResponse = {
   response: string;
   sources: TavilySource[];
@@ -44,7 +60,7 @@ export type ChatResponse = {
   ad: AdPayload | null;
   focus: FocusPayload | null;
   tokens: TokenUsage | null;
-  metrics: null;
+  metrics: SessionMetrics | null;
 };
 
 export type DatasetEntry = {
@@ -88,5 +104,13 @@ export async function postChat(body: ChatRequest): Promise<ChatResponse> {
     throw new Error(detail);
   }
 
+  return res.json();
+}
+
+export async function postMetricsReset(): Promise<SessionMetrics> {
+  const res = await fetch(`${API_BASE}/metrics/reset`, { method: "POST" });
+  if (!res.ok) {
+    throw new Error(`Metrics reset failed: ${res.status}`);
+  }
   return res.json();
 }
