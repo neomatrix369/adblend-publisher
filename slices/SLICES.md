@@ -38,10 +38,12 @@ score < 0.7 → organic response only
 | 6 | AdTech Metrics Panel | Should | 20 min |
 | 7 | Overmind Trace | Could | 20 min |
 | 8 | Polish + Demo Prep | Could | 15 min |
+| 9 | Frontend UI/UX Polish | Should | 45 min |
 
 **Must Have total: ~95 min**  
 **Should Have total: ~70 min**  
-**Could Have total: ~35 min**
+**Could Have total: ~35 min**  
+**Slice 9 (UI/UX): ~45 min** — see [`slice-09-frontend-ux.md`](slice-09-frontend-ux.md)
 
 ---
 

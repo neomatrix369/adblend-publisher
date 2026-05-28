@@ -1,3 +1,8 @@
+import { ExternalLink, Megaphone } from "lucide-react";
+
+import IntentPanel from "@/components/IntentPanel";
+import MetricsPanel from "@/components/MetricsPanel";
+import TracePanel from "@/components/TracePanel";
 import type {
   AdPayload,
   FocusPayload,
@@ -6,10 +11,6 @@ import type {
   TokenUsage,
   TracePayload,
 } from "@/lib/api";
-
-import IntentPanel from "@/components/IntentPanel";
-import MetricsPanel from "@/components/MetricsPanel";
-import TracePanel from "@/components/TracePanel";
 
 type SidePanelProps = {
   intent: IntentPayload | null;
@@ -35,53 +36,70 @@ export default function SidePanel({
   isResettingMetrics,
 }: SidePanelProps) {
   return (
-    <aside className="flex w-80 shrink-0 flex-col gap-4 border-l border-panel-border p-4">
+    <aside className="flex w-full shrink-0 flex-col gap-4 overflow-y-auto border-panel-border bg-background-muted/30 p-4 lg:w-[22rem] lg:border-l lg:p-5 xl:w-80">
+      <header className="lg:hidden">
+        <h2 className="text-sm font-semibold text-foreground">
+          Pipeline & metrics
+        </h2>
+        <p className="mt-0.5 text-xs text-foreground-muted">
+          Intent scoring, ad slot, session stats, and trace spans.
+        </p>
+      </header>
+
       <IntentPanel intent={intent} focus={focus} />
 
-      <section className="rounded-lg border border-panel-border p-4">
-        <h2 className="text-xs font-semibold uppercase tracking-wider text-text-muted">
-          Ad
+      <section className="panel-card p-4">
+        <h2 className="panel-section-title flex items-center gap-1.5">
+          <Megaphone className="h-3.5 w-3.5" aria-hidden />
+          Ad placement
         </h2>
         {ad ? (
-          <div className="mt-3 rounded-lg border border-accent/30 bg-accent/5 p-3">
-            <span className="text-xs font-medium uppercase tracking-wider text-accent">
+          <div className="mt-4 rounded-lg border border-accent/35 bg-accent-muted p-3.5 ring-1 ring-accent/20">
+            <span className="text-xs font-semibold uppercase tracking-wider text-accent">
               Sponsored
               {ad.mock ? (
-                <span className="ml-1 normal-case text-text-muted">(mock)</span>
+                <span className="ml-1.5 font-normal normal-case text-foreground-muted">
+                  (mock)
+                </span>
               ) : null}
             </span>
-            <p className="mt-2 text-sm text-foreground">{ad.headline}</p>
-            <p className="mt-1 text-xs text-text-muted">{ad.body}</p>
+            <p className="mt-2 text-sm font-medium leading-snug text-foreground">
+              {ad.headline}
+            </p>
+            <p className="mt-1.5 text-xs leading-relaxed text-foreground-muted">
+              {ad.body}
+            </p>
             <a
               href={ad.cta_url}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-2 block text-xs text-accent hover:underline"
+              className="mt-3 inline-flex cursor-pointer items-center gap-1 text-xs font-medium text-accent hover:text-accent-hover hover:underline"
             >
-              {ad.cta_label} →
+              {ad.cta_label}
+              <ExternalLink className="h-3 w-3" aria-hidden />
             </a>
           </div>
         ) : (
-          <p className="mt-3 text-xs text-text-muted">
+          <p className="mt-3 text-sm leading-relaxed text-foreground-muted">
             {intent?.tier === "off-topic"
-              ? "No placement — off-topic (outside chatbot domain)"
+              ? "No placement — query is outside the chatbot domain."
               : intent != null
-                ? `No placement — score ${intent.score.toFixed(2)} below gate (0.70)`
-                : "No placement — send a message to score intent"}
+                ? `No placement — score ${intent.score.toFixed(2)} is below the 0.70 gate.`
+                : "No placement yet — send a message to score intent."}
           </p>
         )}
       </section>
 
-      <section className="rounded-lg border border-panel-border p-4">
-        <h2 className="text-xs font-semibold uppercase tracking-wider text-text-muted">
-          Attributes
-        </h2>
+      <section className="panel-card p-4">
+        <h2 className="panel-section-title">Token usage</h2>
         {tokens != null && (tokens.input > 0 || tokens.output > 0) ? (
-          <p className="mt-3 font-mono text-xs text-gray-500">
-            {tokens.input} in · {tokens.output} out
+          <p className="mt-3 font-mono text-sm tabular-nums text-foreground">
+            <span className="text-foreground-muted">In</span> {tokens.input}
+            <span className="mx-2 text-panel-border">·</span>
+            <span className="text-foreground-muted">Out</span> {tokens.output}
           </p>
         ) : (
-          <p className="mt-3 text-xs text-text-muted">—</p>
+          <p className="mt-3 text-sm text-foreground-muted">—</p>
         )}
       </section>
 

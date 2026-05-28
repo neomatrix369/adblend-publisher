@@ -1,6 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { Radio } from "lucide-react";
+
 import ChatPanel, { type Message } from "@/components/ChatPanel";
 import Dropdown from "@/components/Dropdown";
 import SidePanel from "@/components/SidePanel";
@@ -29,6 +31,7 @@ export default function Home() {
   const [metrics, setMetrics] = useState<SessionMetrics | null>(null);
   const [trace, setTrace] = useState<TracePayload | null>(null);
   const [overmindConfigured, setOvermindConfigured] = useState(false);
+  const [apiReachable, setApiReachable] = useState<boolean | null>(null);
   const [isResettingMetrics, setIsResettingMetrics] = useState(false);
 
   const handleInputChange = useCallback(
@@ -140,36 +143,76 @@ export default function Home() {
     void fetch(`${base}/health`)
       .then((res) => res.json())
       .then((body: { overmind_configured?: boolean }) => {
+        setApiReachable(true);
         setOvermindConfigured(Boolean(body.overmind_configured));
       })
       .catch(() => {
+        setApiReachable(false);
         setOvermindConfigured(false);
       });
   }, []);
 
   return (
-    <div className="flex h-screen flex-col bg-background text-foreground">
-      <header className="flex shrink-0 items-center gap-3 border-b border-panel-border px-4 py-3">
-        <h1 className="shrink-0 text-lg font-semibold">
-          <span className="text-accent">AdBlend</span> Publisher
-        </h1>
-        <Dropdown
-          value={dropdownValue}
-          onChange={handleDropdownChange}
-          onSelectEntry={handleSelectEntry}
-        />
-        <button
-          type="button"
-          onClick={() => void sendMessage()}
-          disabled={isLoading || !input.trim()}
-          className="shrink-0 rounded-md bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-50"
-        >
-          Send
-        </button>
+    <div className="flex min-h-dvh flex-col bg-background text-foreground">
+      <header className="shrink-0 border-b border-panel-border bg-background-muted/60 backdrop-blur-md">
+        <div className="flex flex-col gap-3 px-4 py-3 sm:flex-row sm:items-center sm:gap-4 md:px-6">
+          <div className="flex min-w-0 items-center gap-3">
+            <div
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-accent text-sm font-bold text-white shadow-[0_0_20px_rgb(249_115_22/0.35)]"
+              aria-hidden
+            >
+              AB
+            </div>
+            <div className="min-w-0">
+              <h1 className="truncate text-base font-semibold tracking-tight sm:text-lg">
+                <span className="text-accent">AdBlend</span>{" "}
+                <span className="text-foreground-muted font-normal">
+                  Publisher
+                </span>
+              </h1>
+              <p className="hidden text-xs text-foreground-muted sm:block">
+                Intent-gated ad demo · Cursor × Thrad
+              </p>
+            </div>
+            <span
+              className={`ml-auto inline-flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide sm:ml-0 ${
+                apiReachable === null
+                  ? "bg-background-elevated text-foreground-muted"
+                  : apiReachable
+                    ? "bg-success/15 text-success ring-1 ring-success/25"
+                    : "bg-danger/15 text-red-300 ring-1 ring-danger/25"
+              }`}
+              title={
+                apiReachable === null
+                  ? "Checking API…"
+                  : apiReachable
+                    ? "Backend reachable"
+                    : "Backend offline"
+              }
+            >
+              <Radio
+                className={`h-3 w-3 ${apiReachable === null ? "animate-pulse-subtle" : ""}`}
+                aria-hidden
+              />
+              {apiReachable === null
+                ? "API…"
+                : apiReachable
+                  ? "Live"
+                  : "Offline"}
+            </span>
+          </div>
+          <div className="flex min-w-0 flex-1 flex-col gap-2 sm:flex-row sm:items-center">
+            <Dropdown
+              value={dropdownValue}
+              onChange={handleDropdownChange}
+              onSelectEntry={handleSelectEntry}
+            />
+          </div>
+        </div>
       </header>
 
-      <div className="flex min-h-0 flex-1">
-        <main className="flex min-w-0 flex-1 flex-col border-r border-panel-border">
+      <div className="flex min-h-0 flex-1 flex-col lg:flex-row">
+        <main className="flex min-h-0 min-w-0 flex-1 flex-col lg:border-r lg:border-panel-border">
           <ChatPanel
             messages={messages}
             input={input}

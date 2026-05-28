@@ -1,7 +1,14 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { ChevronDown } from "lucide-react";
+
 import { getDataset, type DatasetEntry } from "@/lib/api";
+import {
+  TIER_LABELS,
+  TIER_ORDER,
+  type IntentTier,
+} from "@/lib/tier-styles";
 
 type DropdownProps = {
   value: string;
@@ -9,21 +16,20 @@ type DropdownProps = {
   onSelectEntry: (entry: DatasetEntry | null) => void;
 };
 
-const TIER_ORDER = ["high", "medium", "low", "off-topic"] as const;
-
-const TIER_LABELS: Record<(typeof TIER_ORDER)[number], string> = {
-  high: "🔴 High Intent",
-  medium: "🟡 Medium Intent",
-  low: "🟢 Low Intent",
-  "off-topic": "⚫ Off-topic",
-};
-
 function truncate(text: string, max = 72): string {
   if (text.length <= max) return text;
   return `${text.slice(0, max - 1)}…`;
 }
 
-export default function Dropdown({ value, onChange, onSelectEntry }: DropdownProps) {
+function optgroupLabel(tier: IntentTier): string {
+  return TIER_LABELS[tier];
+}
+
+export default function Dropdown({
+  value,
+  onChange,
+  onSelectEntry,
+}: DropdownProps) {
   const [entries, setEntries] = useState<DatasetEntry[]>([]);
   const [loadError, setLoadError] = useState<string | null>(null);
 
@@ -35,7 +41,9 @@ export default function Dropdown({ value, onChange, onSelectEntry }: DropdownPro
       })
       .catch((err: unknown) => {
         if (!cancelled) {
-          setLoadError(err instanceof Error ? err.message : "Failed to load dataset");
+          setLoadError(
+            err instanceof Error ? err.message : "Failed to load dataset",
+          );
         }
       });
     return () => {
@@ -53,9 +61,10 @@ export default function Dropdown({ value, onChange, onSelectEntry }: DropdownPro
       const bucket = byTier.get(tier) ?? byTier.get("off-topic")!;
       bucket.push(entry);
     }
-    return TIER_ORDER.map((tier) => ({ tier, items: byTier.get(tier) ?? [] })).filter(
-      (g) => g.items.length > 0,
-    );
+    return TIER_ORDER.map((tier) => ({
+      tier,
+      items: byTier.get(tier) ?? [],
+    })).filter((g) => g.items.length > 0);
   }, [entries]);
 
   const handleChange = (selected: string) => {
@@ -69,25 +78,40 @@ export default function Dropdown({ value, onChange, onSelectEntry }: DropdownPro
   };
 
   return (
-    <select
-      value={value}
-      onChange={(e) => handleChange(e.target.value)}
-      className="flex-1 min-w-0 rounded-md border border-panel-border bg-[#0e0e12] px-3 py-2 text-sm text-foreground focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
-      aria-label="Demo questions"
-      title={loadError ?? undefined}
-    >
-      <option value="">
-        {loadError ? "Dataset unavailable" : "Select demo question…"}
-      </option>
-      {grouped.map(({ tier, items }) => (
-        <optgroup key={tier} label={TIER_LABELS[tier as (typeof TIER_ORDER)[number]] ?? tier}>
-          {items.map((entry) => (
-            <option key={entry.user_input} value={entry.user_input}>
-              {truncate(entry.user_input)}
-            </option>
-          ))}
-        </optgroup>
-      ))}
-    </select>
+    <div className="relative min-w-0 flex-1">
+      <select
+        value={value}
+        onChange={(e) => handleChange(e.target.value)}
+        className="input-field w-full cursor-pointer appearance-none pr-10 text-sm"
+        aria-label="Demo questions"
+        aria-invalid={loadError ? true : undefined}
+        title={loadError ?? undefined}
+      >
+        <option value="">
+          {loadError ? "Dataset unavailable" : "Select demo question…"}
+        </option>
+        {grouped.map(({ tier, items }) => (
+          <optgroup
+            key={tier}
+            label={optgroupLabel(tier as IntentTier)}
+          >
+            {items.map((entry) => (
+              <option key={entry.user_input} value={entry.user_input}>
+                {truncate(entry.user_input)}
+              </option>
+            ))}
+          </optgroup>
+        ))}
+      </select>
+      <ChevronDown
+        className="pointer-events-none absolute top-1/2 right-3 h-4 w-4 -translate-y-1/2 text-foreground-muted"
+        aria-hidden
+      />
+      {loadError ? (
+        <p className="mt-1 text-xs text-danger" role="alert">
+          {loadError}
+        </p>
+      ) : null}
+    </div>
   );
 }
