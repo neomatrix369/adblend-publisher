@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useEffect, useRef } from "react";
+import { FormEvent, useLayoutEffect, useRef } from "react";
 import { MessageSquare, Send } from "lucide-react";
 
 import Spinner from "@/components/ui/Spinner";
@@ -29,18 +29,23 @@ export default function ChatPanel({
   isLoading,
 }: ChatPanelProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const lastMessageRef = useRef<HTMLLIElement>(null);
   const canSend = !isLoading && input.trim().length > 0;
 
-  useEffect(() => {
-    const el = scrollRef.current;
-    if (!el) return;
-    const prefersReduced =
-      typeof window !== "undefined" &&
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    el.scrollTo({
-      top: el.scrollHeight,
-      behavior: prefersReduced ? "auto" : "smooth",
-    });
+  // Run after layout so scrollHeight is correct; avoid smooth scroll on tall replies.
+  useLayoutEffect(() => {
+    const container = scrollRef.current;
+    if (!container || messages.length === 0) return;
+
+    const last = messages[messages.length - 1];
+    const anchor = lastMessageRef.current;
+
+    if (last.role === "assistant" && !isLoading && anchor) {
+      anchor.scrollIntoView({ block: "start", behavior: "auto" });
+      return;
+    }
+
+    container.scrollTop = container.scrollHeight;
   }, [messages, isLoading]);
 
   function handleSubmit(e: FormEvent) {
@@ -52,7 +57,7 @@ export default function ChatPanel({
     <div className="flex h-full min-h-0 flex-1 flex-col overflow-hidden">
       <div
         ref={scrollRef}
-        className="min-h-0 flex-1 overflow-y-auto overscroll-y-contain px-4 py-6 md:px-6"
+        className="min-h-0 flex-1 overflow-y-auto overscroll-y-contain px-4 pt-4 pb-2 md:px-6 md:pt-6"
       >
         {messages.length === 0 ? (
           <div className="mx-auto flex max-w-md flex-col items-center justify-center py-16 text-center">
@@ -75,11 +80,17 @@ export default function ChatPanel({
             </p>
           </div>
         ) : (
-          <ul className="mx-auto flex max-w-3xl flex-col gap-4" role="list">
+          <ul
+            className="mx-auto flex w-full max-w-3xl flex-col gap-4 pb-4"
+            role="list"
+          >
             {messages.map((msg, i) => (
               <li
                 key={`${msg.role}-${i}-${msg.content.slice(0, 24)}`}
-                className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
+                ref={i === messages.length - 1 ? lastMessageRef : undefined}
+                className={`flex scroll-mt-4 scroll-mb-2 ${
+                  msg.role === "user" ? "justify-end" : "justify-start"
+                }`}
               >
                 <article
                   className={`max-w-[min(85%,42rem)] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
@@ -137,7 +148,6 @@ export default function ChatPanel({
             ) : null}
           </ul>
         )}
-        <div className="h-px shrink-0" aria-hidden />
       </div>
 
       <form
