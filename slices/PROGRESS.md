@@ -1,6 +1,6 @@
 # AdBlend — Slice Progress
 
-Last updated: 2026-05-28
+Last updated: 2026-05-29
 
 | # | Slice | Status | Notes |
 |---|--------|--------|-------|
@@ -16,12 +16,21 @@ Last updated: 2026-05-28
 | 9b | Publisher impact hierarchy | **done** | `ImpactPanel` hero blocks for intent/ad/metrics |
 | 10 | Persona & Answer Alignment | **done** | Personas, cosine alignment, `AlignmentPanel` |
 | 11 | Unit economics (COGS) | **done** | Per-service COGS, token in/out USD, model |
+| 12 | Overmind observability | **done** | Tags, span attrs, `capture_exception`; thrad under parent span |
 
 ## Active slice
 
-**Slice 8 (remainder)** — optional error-state hardening ([`slice-08-polish.md`](slice-08-polish.md)).
+**Slice 8 (remainder)** — error-state hardening ([`slice-08-polish.md`](slice-08-polish.md)).
 
 Plan: [`SLICES.md`](SLICES.md)
+
+## Slice 12 completed
+
+- `overmind_setup.py` — `tag_if_active`, `capture_pipeline_error`
+- `trace_collector.py` — optional span attributes on `record()`
+- `main.py` — request tags; tavily/thrad attrs; errors captured; `thrad.bid` under `adblend.chat`
+- `tests/test_overmind_tags.py`, updated `test_trace_collector.py`
+- `README.md` — Overmind dashboard quick start
 
 ## Slice 11 completed
 

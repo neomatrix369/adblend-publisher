@@ -44,3 +44,27 @@ def init_overmind() -> bool:
 
 def is_overmind_configured() -> bool:
     return _tracing_active
+
+
+def tag_if_active(key: str, value: str) -> None:
+    """Attach metadata to the current trace; no-op when Overmind is off."""
+    if not _tracing_active:
+        return
+    try:
+        from overmind import set_tag
+
+        set_tag(key, value)
+    except Exception:
+        logger.debug("Overmind set_tag failed for %s", key, exc_info=True)
+
+
+def capture_pipeline_error(exc: BaseException) -> None:
+    """Record pipeline failures on the active span; no-op when Overmind is off."""
+    if not _tracing_active:
+        return
+    try:
+        from overmind import capture_exception
+
+        capture_exception(exc)
+    except Exception:
+        logger.debug("Overmind capture_exception failed", exc_info=True)

@@ -86,3 +86,9 @@ OVERMIND_ENVIRONMENT=development
 - [x] Tavily call appears as a traced span
 - [x] `thrad.bid` and `claude.answer_align` traced (post-slice-7 additions)
 - [x] No performance regression (tracing is lightweight / non-blocking)
+
+---
+
+## Follow-up
+
+**Slice 12** — dashboard metadata and error capture: [`slice-12-overmind-observability.md`](slice-12-overmind-observability.md) (`set_tag`, span attributes, `capture_exception`). Implement after this slice is stable in production demos.

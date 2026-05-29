@@ -16,7 +16,7 @@ Licensed under [MIT](LICENSE).
 | Golden master dropdown (89 Qs) | 4 | Static intent for dropdown; live for freeform |
 | Intent / focus / token UI | 5 | Rationale, tier badge, gate decision |
 | Session metrics + fill rate | 6 | Backend singleton; reset endpoints |
-| Overmind trace panel | 7 | Optional `OVERMIND_API_KEY`; local spans always |
+| Overmind trace panel | 7 + 12 | Optional `OVERMIND_API_KEY`; dashboard tags + span attrs |
 | Demo polish (cache, reset, toggles) | 9 | Tavily cache, ads toggle, design system |
 | Impact hierarchy panels | 9b | `ImpactPanel` hero blocks for intent/ad/metrics |
 | Personas + answer alignment | 10 | Cosine similarity scoring + `AlignmentPanel` |
@@ -72,6 +72,13 @@ Copy [`.env.example`](.env.example) to repo-root `.env` and/or `backend/.env`.
 | `TAVILY_USD_PER_SEARCH` | No | Tavily COGS default $0.01/search |
 
 Mock Thrad ads — no Thrad signup required (`thrad_mode: mock` on `/health`).
+
+### Overmind dashboard (optional)
+
+1. Sign up at [console.overmindlab.ai](https://console.overmindlab.ai) and set `OVERMIND_API_KEY` in `.env`.
+2. Restart the backend; `/health` should report `overmind_configured: true`.
+3. Run a chat query, then open the console → service **`adblend-publisher`** → trace **`adblend.chat`**.
+4. Filter by tags such as `chat.source` (`dropdown` vs `freeform`) and `intent.tier`. Manual spans include `tavily.from_cache` on repeat searches.
 
 ## API endpoints
 

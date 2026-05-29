@@ -22,7 +22,12 @@ from answer_focus import classify_answer
 from claude_client import generate_response
 from intent import INTENT_GATE_THRESHOLD, score_intent
 from metrics import metrics as session_metrics
-from overmind_setup import init_overmind, is_overmind_configured
+from overmind_setup import (
+    capture_pipeline_error,
+    init_overmind,
+    is_overmind_configured,
+    tag_if_active,
+)
 from service_pricing import build_query_costs
 from thrad_client import request_ad
 from tavily_client import clear_cache as clear_tavily_cache
@@ -269,12 +274,18 @@ async def chat(req: ChatRequest):
     trace = TraceCollector()
     tavily_from_cache = False
     use_live_intent = not (req.source == "dropdown" and req.intent is not None)
-    try:
-        with request_trace_root():
-            with trace.record("tavily.search"):
+    with request_trace_root():
+        tag_if_active("chat.source", req.source)
+        tag_if_active("chat.ads_enabled", str(req.ads_enabled).lower())
+        tag_if_active("intent.scored_live", str(use_live_intent).lower())
+        try:
+            tavily_attrs: dict[str, Any] = {}
+            with trace.record("tavily.search", tavily_attrs):
                 tavily_result = await asyncio.to_thread(tavily_search, req.message)
-            sources = tavily_result.sources
-            tavily_from_cache = tavily_result.from_cache
+                sources = tavily_result.sources
+                tavily_from_cache = tavily_result.from_cache
+                tavily_attrs["tavily.from_cache"] = tavily_from_cache
+                tavily_attrs["tavily.source_count"] = len(sources)
             context = _format_context(sources)
             if use_live_intent:
                 with trace.record("claude.intent"):
@@ -285,6 +296,8 @@ async def chat(req: ChatRequest):
                 intent, focus, intent_tokens = await asyncio.to_thread(
                     _resolve_intent, req
                 )
+
+            tag_if_active("intent.tier", intent.tier)
 
             with trace.record("claude.respond"):
                 response_text, chat_tokens = await asyncio.to_thread(
@@ -311,27 +324,31 @@ async def chat(req: ChatRequest):
                 intent_tokens,
                 TokenUsage(**align_tokens),
             )
-    except ValueError as exc:
-        raise HTTPException(
-            status_code=503,
-            detail=str(exc),
-        ) from exc
-    except Exception as exc:
-        logger.exception("Chat pipeline failed")
-        raise HTTPException(
-            status_code=502,
-            detail="Failed to generate a response. Check server logs.",
-        ) from exc
+        except ValueError as exc:
+            capture_pipeline_error(exc)
+            raise HTTPException(
+                status_code=503,
+                detail=str(exc),
+            ) from exc
+        except Exception as exc:
+            capture_pipeline_error(exc)
+            logger.exception("Chat pipeline failed")
+            raise HTTPException(
+                status_code=502,
+                detail="Failed to generate a response. Check server logs.",
+            ) from exc
 
-    ad_data: dict[str, Any] | None = None
-    if req.ads_enabled and intent.score >= INTENT_GATE_THRESHOLD:
-        with trace.record("thrad.bid"):
-            ad_data = await asyncio.to_thread(
-                request_ad,
-                req.message,
-                focus.model_dump(),
-                intent.score,
-            )
+        ad_data: dict[str, Any] | None = None
+        if req.ads_enabled and intent.score >= INTENT_GATE_THRESHOLD:
+            thrad_attrs: dict[str, Any] = {"intent.score": intent.score}
+            with trace.record("thrad.bid", thrad_attrs):
+                ad_data = await asyncio.to_thread(
+                    request_ad,
+                    req.message,
+                    focus.model_dump(),
+                    intent.score,
+                )
+                thrad_attrs["thrad.ad_served"] = ad_data is not None
 
     ad = AdPayload(**ad_data) if ad_data else None
 

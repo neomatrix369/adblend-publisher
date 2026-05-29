@@ -20,7 +20,7 @@ User types / selects from dropdown
         ↓
 score ≥ 0.7 + ads on → [Slice 3] Thrad bid → ad in side panel
         ↓
-[Slice 6] Metrics panel updates · [Slice 7] Trace spans
+[Slice 6] Metrics panel updates · [Slice 7] Trace spans · [Slice 12] Overmind tags/errors (optional)
         ↓
 [Slice 10] Classify answer → alignment score (persona + focus)
         ↓
@@ -47,10 +47,11 @@ score ≥ 0.7 + ads on → [Slice 3] Thrad bid → ad in side panel
 | 9b | Publisher impact hierarchy | Should | ~20 min | **done** | `feat/slice-09-impact-hierarchy` |
 | 10 | Persona & Answer Alignment | Should | ~75 min | **done** | `main` |
 | 11 | Unit economics (COGS) | Should | ~30 min | **done** | `feat/slice-11-unit-economics` |
+| 12 | Overmind observability | Could | ~20 min | **done** | `feat/slice-12-overmind-observability` |
 
 **Must Have total: ~95 min**  
 **Should Have total: ~200 min** (includes slices 9–11, 9b)  
-**Could Have total: ~30 min** (slice 7 done; slice 8 remainder only)
+**Could Have total: ~50 min** (slice 7 done; slice 8 remainder; slice 12 Overmind depth)
 
 ### Slice 8 vs 9 (plan change)
 
@@ -69,6 +70,8 @@ Originally slice 8 covered demo polish (cache, reset, toggles, loading) and slic
 **Slice 10** spec: [`slice-10-persona-alignment.md`](slice-10-persona-alignment.md) — restore personas, classify assistant replies, cosine alignment scores in UI.
 
 **Slice 11** spec: [`slice-11-unit-economics.md`](slice-11-unit-economics.md) — per-service COGS, token in/out USD, session cumulative spend.
+
+**Slice 12** spec: [`slice-12-overmind-observability.md`](slice-12-overmind-observability.md) — `set_tag`, span attributes, `capture_exception` (builds on slice 7).
 
 ---
 
@@ -121,6 +124,6 @@ Top-level `personas[]` (id, role, description) returns with `GET /dataset` from 
 | Prize | Slice | Status |
 |---|---|---|
 | Best use of Tavily | 2 (+ cache in 9) | Shipped |
-| Best use of Overmind | 7 | Shipped |
+| Best use of Overmind | 7 + 12 | Shipped |
 | Best use of Alpic | — | Out of scope |
 | Best use of Cursor | All | Use Composer throughout |

@@ -71,6 +71,12 @@ Close remaining demo rough edges **not** already delivered in slices 9–11: res
 2. Point to per-step COGS (Tavily, Claude intent/respond/align, Thrad)
 3. Expand **Technical details** for aggregate token USD; note session COGS in metrics
 
+**Scenario G — Overmind depth (slice 12, when shipped):**
+1. Set `OVERMIND_API_KEY`; confirm trace badge **Overmind**
+2. Run Scenario A; open Overmind console → `adblend-publisher` / `adblend.chat`
+3. Show tags (`chat.source`, `ads_enabled`) and nested Anthropic spans
+4. Repeat query — `tavily.from_cache` on span (slice 12 attribute)
+
 ---
 
 ## Branch
