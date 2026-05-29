@@ -6,10 +6,12 @@ import json
 import logging
 import os
 import re
+from dataclasses import dataclass
 from typing import Any
 
 import anthropic
 
+import demo_step_cache
 from claude_client import DEFAULT_MODEL
 
 logger = logging.getLogger(__name__)
@@ -65,14 +67,35 @@ def _parse_answer_json(text: str) -> dict[str, Any]:
     }
 
 
+@dataclass(frozen=True)
+class ClassifyAnswerResult:
+    data: dict[str, Any]
+    tokens: dict[str, int]
+    from_cache: bool
+
+
 def classify_answer(
     user_message: str,
     assistant_text: str,
-) -> tuple[dict[str, Any], dict[str, int]]:
+) -> ClassifyAnswerResult:
+    cache_key = demo_step_cache.align_key(user_message, assistant_text)
+    cached = demo_step_cache.get("align", cache_key)
+    if cached is not None:
+        data, _stored_tokens = cached
+        return ClassifyAnswerResult(
+            data=data,
+            tokens=_empty_tokens(),
+            from_cache=True,
+        )
+
     api_key = os.getenv("ANTHROPIC_API_KEY")
     if not api_key:
         logger.warning("ANTHROPIC_API_KEY missing — answer classification unavailable")
-        return _fallback_answer(), _empty_tokens()
+        return ClassifyAnswerResult(
+            data=_fallback_answer(),
+            tokens=_empty_tokens(),
+            from_cache=False,
+        )
 
     client = anthropic.Anthropic(api_key=api_key)
     user_content = (
@@ -97,11 +120,25 @@ def classify_answer(
                 text = block.text
                 break
         if not text:
-            return _fallback_answer(), tokens
-        return _parse_answer_json(text), tokens
+            return ClassifyAnswerResult(
+                data=_fallback_answer(),
+                tokens=tokens,
+                from_cache=False,
+            )
+        parsed = _parse_answer_json(text)
+        demo_step_cache.set("align", cache_key, (parsed, tokens))
+        return ClassifyAnswerResult(data=parsed, tokens=tokens, from_cache=False)
     except (json.JSONDecodeError, KeyError, TypeError, ValueError) as exc:
         logger.warning("Answer focus parse failed: %s", exc)
-        return _fallback_answer(), tokens
+        return ClassifyAnswerResult(
+            data=_fallback_answer(),
+            tokens=tokens,
+            from_cache=False,
+        )
     except Exception:
         logger.exception("Answer classification failed")
-        return _fallback_answer(), _empty_tokens()
+        return ClassifyAnswerResult(
+            data=_fallback_answer(),
+            tokens=_empty_tokens(),
+            from_cache=False,
+        )

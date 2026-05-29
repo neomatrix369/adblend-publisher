@@ -2,10 +2,12 @@ import json
 import logging
 import os
 import re
+from dataclasses import dataclass
 from typing import Any
 
 import anthropic
 
+import demo_step_cache
 from claude_client import DEFAULT_MODEL
 
 logger = logging.getLogger(__name__)
@@ -93,11 +95,32 @@ def _empty_tokens() -> dict[str, int]:
     return {"input": 0, "output": 0}
 
 
-def score_intent(message: str) -> tuple[dict[str, Any], dict[str, int]]:
+@dataclass(frozen=True)
+class IntentScoreResult:
+    scored: dict[str, Any]
+    tokens: dict[str, int]
+    from_cache: bool
+
+
+def score_intent(message: str) -> IntentScoreResult:
+    cache_key = demo_step_cache.intent_key(message)
+    cached = demo_step_cache.get("intent", cache_key)
+    if cached is not None:
+        scored, _stored_tokens = cached
+        return IntentScoreResult(
+            scored=scored,
+            tokens=_empty_tokens(),
+            from_cache=True,
+        )
+
     api_key = os.getenv("ANTHROPIC_API_KEY")
     if not api_key:
         logger.warning("ANTHROPIC_API_KEY missing — intent scoring unavailable")
-        return _fallback_intent(), _empty_tokens()
+        return IntentScoreResult(
+            scored=_fallback_intent(),
+            tokens=_empty_tokens(),
+            from_cache=False,
+        )
 
     client = anthropic.Anthropic(api_key=api_key)
     try:
@@ -117,16 +140,29 @@ def score_intent(message: str) -> tuple[dict[str, Any], dict[str, int]]:
                 text = block.text
                 break
         if not text:
-            return _fallback_intent(), tokens
+            return IntentScoreResult(
+                scored=_fallback_intent(),
+                tokens=tokens,
+                from_cache=False,
+            )
         parsed = _parse_intent_json(text)
         parsed["tier"] = tier_from_score(float(parsed["score"]))
         parsed["ad_eligible"] = ad_eligible_from_score(float(parsed["score"]))
         if not parsed["rationale"]:
             parsed["rationale"] = f"Classified as {parsed['tier']} intent"
-        return parsed, tokens
+        demo_step_cache.set("intent", cache_key, (parsed, tokens))
+        return IntentScoreResult(scored=parsed, tokens=tokens, from_cache=False)
     except (json.JSONDecodeError, KeyError, TypeError, ValueError) as exc:
         logger.warning("Intent parse failed: %s", exc)
-        return _fallback_intent(), _empty_tokens()
+        return IntentScoreResult(
+            scored=_fallback_intent(),
+            tokens=_empty_tokens(),
+            from_cache=False,
+        )
     except Exception:
         logger.exception("Intent scoring failed")
-        return _fallback_intent(), _empty_tokens()
+        return IntentScoreResult(
+            scored=_fallback_intent(),
+            tokens=_empty_tokens(),
+            from_cache=False,
+        )

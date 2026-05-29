@@ -1,7 +1,10 @@
 import os
+from dataclasses import dataclass
 from typing import TypedDict
 
 import anthropic
+
+import demo_step_cache
 
 SYSTEM_PROMPT = (
     "You are a helpful AI assistant for publishers evaluating AI tooling. "
@@ -18,7 +21,24 @@ class TokenUsage(TypedDict):
     output: int
 
 
-def generate_response(user_message: str, context: str) -> tuple[str, TokenUsage]:
+@dataclass(frozen=True)
+class GenerateResponseResult:
+    text: str
+    tokens: TokenUsage
+    from_cache: bool
+
+
+def generate_response(user_message: str, context: str) -> GenerateResponseResult:
+    cache_key = demo_step_cache.respond_key(user_message, context)
+    cached = demo_step_cache.get("respond", cache_key)
+    if cached is not None:
+        text, _stored_tokens = cached
+        return GenerateResponseResult(
+            text=text,
+            tokens={"input": 0, "output": 0},
+            from_cache=True,
+        )
+
     api_key = os.getenv("ANTHROPIC_API_KEY")
     if not api_key:
         raise ValueError("ANTHROPIC_API_KEY is not set")
@@ -40,5 +60,11 @@ def generate_response(user_message: str, context: str) -> tuple[str, TokenUsage]
 
     for block in message.content:
         if block.type == "text":
-            return block.text, tokens
-    return "", tokens
+            demo_step_cache.set("respond", cache_key, (block.text, tokens))
+            return GenerateResponseResult(
+                text=block.text,
+                tokens=tokens,
+                from_cache=False,
+            )
+    demo_step_cache.set("respond", cache_key, ("", tokens))
+    return GenerateResponseResult(text="", tokens=tokens, from_cache=False)

@@ -150,7 +150,21 @@ def _anthropic_line(
     input_tokens: int,
     output_tokens: int,
     rates: PricingRates,
+    from_cache: bool = False,
 ) -> CostLine:
+    if from_cache:
+        return CostLine(
+            service="anthropic",
+            step=step,
+            label=label + " (cached)",
+            amount_usd=0.0,
+            input_tokens=0,
+            output_tokens=0,
+            input_cost_usd=0.0,
+            output_cost_usd=0.0,
+            model=_anthropic_model_id(),
+            from_cache=True,
+        )
     input_cost = anthropic_input_cost_usd(input_tokens, rates=rates)
     output_cost = anthropic_output_cost_usd(output_tokens, rates=rates)
     return CostLine(
@@ -207,6 +221,9 @@ def build_query_costs(
     align_tokens: dict[str, int],
     thrad_bid_attempted: bool,
     intent_scored_live: bool,
+    intent_from_cache: bool = False,
+    respond_from_cache: bool = False,
+    align_from_cache: bool = False,
     rates: PricingRates | None = None,
 ) -> tuple[list[CostLine], float, AnthropicTokenCostSummary]:
     pricing = rates or get_pricing_rates()
@@ -233,6 +250,7 @@ def build_query_costs(
                 input_tokens=intent_in,
                 output_tokens=intent_out,
                 rates=pricing,
+                from_cache=intent_from_cache,
             )
         )
 
@@ -245,6 +263,7 @@ def build_query_costs(
             input_tokens=respond_in,
             output_tokens=respond_out,
             rates=pricing,
+            from_cache=respond_from_cache,
         )
     )
 
@@ -257,6 +276,7 @@ def build_query_costs(
             input_tokens=align_in,
             output_tokens=align_out,
             rates=pricing,
+            from_cache=align_from_cache,
         )
     )
 

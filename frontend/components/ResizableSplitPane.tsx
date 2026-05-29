@@ -42,6 +42,8 @@ export default function ResizableSplitPane({
   const [isLargeLayout, setIsLargeLayout] = useState(false);
 
   useEffect(() => {
+    // Must run after hydration: server and first client paint use DEFAULT_SIDE_WIDTH.
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- localStorage is client-only
     setSideWidth(clamp(readStoredWidth(), MIN_SIDE_WIDTH, 520));
   }, []);
 

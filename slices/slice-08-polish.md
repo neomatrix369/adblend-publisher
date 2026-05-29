@@ -29,6 +29,13 @@ Close remaining demo rough edges **not** already delivered in slices 9–11: res
 - [x] `capture_exception` on pipeline failures when Overmind configured
 - [x] Demo script Scenario G — see below
 
+## Per-step Claude cache (slice 8)
+
+- [x] `demo_step_cache.py` — in-memory caches for `claude.intent`, `claude.respond`, `claude.answer_align`
+- [x] Each step returns `from_cache`; cached steps = $0 in unit economics
+- [x] Span attributes: `claude.intent.from_cache`, `claude.respond.from_cache`, `claude.answer_align.from_cache`
+- [x] `POST /demo/reset` clears Tavily + all Claude step caches
+
 ---
 
 ## Remaining checklist
@@ -82,7 +89,7 @@ Close remaining demo rough edges **not** already delivered in slices 9–11: res
 1. Set `OVERMIND_API_KEY` in repo `.env`; restart backend; trace badge **Overmind**
 2. Run Scenario A; open [console.overmindlab.ai](https://console.overmindlab.ai) → `adblend-publisher` / `adblend.chat`
 3. Show tags (`chat.source`, `chat.ads_enabled`, `intent.tier`) and nested Anthropic spans under `claude.respond`
-4. Repeat the same dropdown question — `tavily.from_cache: true` on `tavily.search`
+4. Repeat the same dropdown question — all cache attrs true (`tavily.from_cache`, `claude.respond.from_cache`, `claude.answer_align.from_cache`); unit economics near $0
 
 ---
 

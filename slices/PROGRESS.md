@@ -11,7 +11,7 @@ Last updated: 2026-05-29
 | 5 | Live Intent + Attributes UI | **done** | Intent panel, rationale, tokens, focus chip |
 | 6 | AdTech Metrics Panel | **done** | `metrics.py`, panel + reset; `/chat` returns metrics |
 | 7 | Overmind Trace | **done** | Init, trace panel, pipeline spans — extended in slice 12 |
-| 8 | Polish + Demo Prep (remainder) | **queued** | Error states + final checklist — [`slice-08-polish.md`](slice-08-polish.md) |
+| 8 | Polish + Demo Prep (remainder) | **in progress** | Per-step Claude cache shipped; error states still open — [`slice-08-polish.md`](slice-08-polish.md) |
 | 9 | Frontend UI/UX + Demo Polish | **done** | UI, scroll, cache, reset, resizable split |
 | 9b | Publisher impact hierarchy | **done** | `ImpactPanel` hero blocks for intent/ad/metrics |
 | 10 | Persona & Answer Alignment | **done** | Personas, cosine alignment, `AlignmentPanel` |
@@ -20,9 +20,15 @@ Last updated: 2026-05-29
 
 ## Active slice
 
-**Slice 8 (remainder)** — error-state hardening ([`slice-08-polish.md`](slice-08-polish.md)).
+**Slice 8 (remainder)** — error-state hardening ([`slice-08-polish.md`](slice-08-polish.md)). Per-step Claude cache (`intent`, `respond`, `answer_align`) shipped 2026-05-29.
 
-Plan: [`SLICES.md`](SLICES.md)
+## Slice 8 — per-step cache (partial)
+
+- `backend/demo_step_cache.py` — namespaced in-memory stores + key helpers
+- `backend/intent.py`, `claude_client.py`, `answer_focus.py` — `from_cache` on results
+- `backend/main.py` — span attrs; `POST /demo/reset` clears all pipeline caches
+- `backend/service_pricing.py` — cached Anthropic steps = $0
+- Tests: `test_demo_step_cache.py`, `test_intent_cache.py`, `test_respond_cache.py`, `test_align_cache.py`
 
 ## Slice 12 completed
 

@@ -20,6 +20,7 @@ from pydantic import BaseModel, Field
 from alignment import compute_alignment
 from answer_focus import classify_answer
 from claude_client import generate_response
+from demo_step_cache import clear_all as clear_demo_step_cache
 from intent import INTENT_GATE_THRESHOLD, score_intent
 from metrics import metrics as session_metrics
 from overmind_setup import (
@@ -208,24 +209,24 @@ def _format_context(sources: list[dict[str, Any]]) -> str:
 
 def _resolve_intent(
     req: ChatRequest,
-) -> tuple[IntentPayload, Focus, TokenUsage]:
+) -> tuple[IntentPayload, Focus, TokenUsage, bool]:
     if req.source == "dropdown" and req.intent is not None:
         intent = req.intent
         focus = req.focus or Focus()
-        return intent, focus, TokenUsage()
+        return intent, focus, TokenUsage(), False
 
-    scored, intent_tokens = score_intent(req.message)
+    result = score_intent(req.message)
     intent = IntentPayload(
-        score=float(scored["score"]),
-        tier=str(scored["tier"]),
-        ad_eligible=bool(scored["ad_eligible"]),
-        rationale=str(scored.get("rationale") or "") or None,
+        score=float(result.scored["score"]),
+        tier=str(result.scored["tier"]),
+        ad_eligible=bool(result.scored["ad_eligible"]),
+        rationale=str(result.scored.get("rationale") or "") or None,
     )
     focus = req.focus or Focus(
-        category=str(scored.get("category") or ""),
-        sub_category=str(scored.get("sub_category") or ""),
+        category=str(result.scored.get("category") or ""),
+        sub_category=str(result.scored.get("sub_category") or ""),
     )
-    return intent, focus, TokenUsage(**intent_tokens)
+    return intent, focus, TokenUsage(**result.tokens), result.from_cache
 
 
 def _merge_tokens(*parts: TokenUsage) -> TokenUsage:
@@ -251,9 +252,10 @@ async def reset_metrics():
 
 @app.post("/demo/reset")
 async def reset_demo():
-    """Clear session metrics and Tavily cache for a clean demo run."""
+    """Clear session metrics and pipeline caches for a clean demo run."""
     session_metrics.reset()
     clear_tavily_cache()
+    clear_demo_step_cache()
     return session_metrics.to_dict()
 
 
@@ -273,6 +275,9 @@ async def health():
 async def chat(req: ChatRequest):
     trace = TraceCollector()
     tavily_from_cache = False
+    intent_from_cache = False
+    respond_from_cache = False
+    align_from_cache = False
     use_live_intent = not (req.source == "dropdown" and req.intent is not None)
     with request_trace_root():
         tag_if_active("chat.source", req.source)
@@ -288,26 +293,38 @@ async def chat(req: ChatRequest):
                 tavily_attrs["tavily.source_count"] = len(sources)
             context = _format_context(sources)
             if use_live_intent:
-                with trace.record("claude.intent"):
-                    intent, focus, intent_tokens = await asyncio.to_thread(
-                        _resolve_intent, req
+                intent_attrs: dict[str, Any] = {}
+                with trace.record("claude.intent", intent_attrs):
+                    intent, focus, intent_tokens, intent_from_cache = (
+                        await asyncio.to_thread(_resolve_intent, req)
                     )
+                    intent_attrs["claude.intent.from_cache"] = intent_from_cache
             else:
-                intent, focus, intent_tokens = await asyncio.to_thread(
-                    _resolve_intent, req
+                intent, focus, intent_tokens, intent_from_cache = (
+                    await asyncio.to_thread(_resolve_intent, req)
                 )
 
             tag_if_active("intent.tier", intent.tier)
 
-            with trace.record("claude.respond"):
-                response_text, chat_tokens = await asyncio.to_thread(
+            respond_attrs: dict[str, Any] = {}
+            with trace.record("claude.respond", respond_attrs):
+                respond_result = await asyncio.to_thread(
                     generate_response, req.message, context
                 )
+                response_text = respond_result.text
+                chat_tokens = respond_result.tokens
+                respond_from_cache = respond_result.from_cache
+                respond_attrs["claude.respond.from_cache"] = respond_from_cache
 
-            with trace.record("claude.answer_align"):
-                answer_data, align_tokens = await asyncio.to_thread(
+            align_attrs: dict[str, Any] = {}
+            with trace.record("claude.answer_align", align_attrs):
+                align_result = await asyncio.to_thread(
                     classify_answer, req.message, response_text
                 )
+                answer_data = align_result.data
+                align_tokens = align_result.tokens
+                align_from_cache = align_result.from_cache
+                align_attrs["claude.answer_align.from_cache"] = align_from_cache
 
             alignment_raw = compute_alignment(
                 question_persona_id=req.persona_id,
@@ -362,6 +379,9 @@ async def chat(req: ChatRequest):
         align_tokens=align_tokens,
         thrad_bid_attempted=thrad_called,
         intent_scored_live=use_live_intent,
+        intent_from_cache=intent_from_cache,
+        respond_from_cache=respond_from_cache,
+        align_from_cache=align_from_cache,
     )
 
     session_metrics.record(

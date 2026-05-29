@@ -103,6 +103,30 @@ def test_given_dropdown_intent_when_build_costs_then_skips_intent_line() -> None
     assert summary.total_cost_usd == pytest.approx(anthropic_cost_usd(120, 60))
 
 
+def test_given_cached_respond_and_align_when_build_costs_then_zero_anthropic() -> None:
+    # when
+    lines, total, summary = build_query_costs(
+        tavily_from_cache=True,
+        intent_tokens={"input": 0, "output": 0},
+        respond_tokens={"input": 0, "output": 0},
+        align_tokens={"input": 0, "output": 0},
+        thrad_bid_attempted=False,
+        intent_scored_live=False,
+        respond_from_cache=True,
+        align_from_cache=True,
+    )
+
+    # then
+    respond_line = next(line for line in lines if line.step == "claude.respond")
+    align_line = next(line for line in lines if line.step == "claude.answer_align")
+    assert respond_line.from_cache is True
+    assert align_line.from_cache is True
+    assert respond_line.amount_usd == 0.0
+    assert align_line.amount_usd == 0.0
+    assert total == 0.0
+    assert summary.total_cost_usd == 0.0
+
+
 def test_given_token_split_when_anthropic_input_output_cost_then_uses_rates() -> None:
     # given
     rates = PricingRates(

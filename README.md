@@ -17,7 +17,7 @@ Licensed under [MIT](LICENSE).
 | Intent / focus / token UI | 5 | Rationale, tier badge, gate decision |
 | Session metrics + fill rate | 6 | Backend singleton; reset endpoints |
 | Overmind trace panel | 7 + 12 | Optional `OVERMIND_API_KEY`; dashboard tags + span attrs |
-| Demo polish (cache, reset, toggles) | 9 | Tavily cache, ads toggle, design system |
+| Demo polish (cache, reset, toggles) | 9 + 8 | Tavily + per-step Claude cache; ads toggle, design system |
 | Impact hierarchy panels | 9b | `ImpactPanel` hero blocks for intent/ad/metrics |
 | Personas + answer alignment | 10 | Cosine similarity scoring + `AlignmentPanel` |
 | Unit economics (COGS) | 11 | Per-step USD, token in/out, session COGS |
@@ -83,7 +83,7 @@ Same pattern as the [Overmind Python quick start](https://docs.overmindlab.ai/gu
 2. Restart the backend; `/health` should report `overmind_configured: true` and the UI trace badge **Overmind**.
 3. Run a chat query; open the console → service **`adblend-publisher`** → parent span **`adblend.chat`** (includes search, Claude steps, and optional `thrad.bid`).
 4. **Tags:** `chat.source`, `chat.ads_enabled`, `intent.scored_live`, `intent.tier`.
-5. **Span attributes:** `tavily.from_cache`, `tavily.source_count`, `intent.score`, `thrad.ad_served` (repeat queries show cache hits).
+5. **Span attributes:** `tavily.from_cache`, `tavily.source_count`, `claude.*.from_cache`, `intent.score`, `thrad.ad_served` (repeat queries show cache hits and near-zero COGS).
 
 Without a key, the in-app trace panel still works in **Local** mode (`TraceCollector` only).
 
@@ -95,7 +95,7 @@ Without a key, the in-app trace panel still works in **Local** mode (`TraceColle
 | `GET` | `/dataset` | Golden master `{ personas, entries }` |
 | `GET` | `/health` | Key flags, intent threshold, Overmind status |
 | `POST` | `/metrics/reset` | Clear session metrics |
-| `POST` | `/demo/reset` | Metrics + Tavily cache (demo restart) |
+| `POST` | `/demo/reset` | Metrics + Tavily + Claude step caches (demo restart) |
 
 ## Project layout
 
@@ -106,7 +106,7 @@ backend/           FastAPI — chat pipeline, metrics, pricing, tracing
   overmind_setup.py   optional Overmind init, tags, error capture
   trace_collector.py  UI trace + OTEL spans
   intent.py, claude_client.py, answer_focus.py, alignment.py
-  tavily_client.py, thrad_client.py, metrics.py, service_pricing.py
+  tavily_client.py, demo_step_cache.py, thrad_client.py, metrics.py, service_pricing.py
 data/              golden_dataset.json (89 entries + personas)
 scripts/           enrich_golden_personas.py
 slices/            Slice plan and per-slice specs
