@@ -30,3 +30,5 @@ frontend/out/
 
 # Local-only slice notes (tracked specs live in slices/*.md)
 slices/.local/
+
+.overmind/
