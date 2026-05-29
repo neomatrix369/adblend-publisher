@@ -10,7 +10,7 @@ Last updated: 2026-05-29
 | 4 | Golden Master Dropdown | **done** | Static intent from golden master; tier-grouped dropdown |
 | 5 | Live Intent + Attributes UI | **done** | Intent panel, rationale, tokens, focus chip |
 | 6 | AdTech Metrics Panel | **done** | `metrics.py`, panel + reset; `/chat` returns metrics |
-| 7 | Overmind Trace | **done** | Overmind init, trace panel, pipeline spans |
+| 7 | Overmind Trace | **done** | Init, trace panel, pipeline spans — extended in slice 12 |
 | 8 | Polish + Demo Prep (remainder) | **queued** | Error states + final checklist — [`slice-08-polish.md`](slice-08-polish.md) |
 | 9 | Frontend UI/UX + Demo Polish | **done** | UI, scroll, cache, reset, resizable split |
 | 9b | Publisher impact hierarchy | **done** | `ImpactPanel` hero blocks for intent/ad/metrics |
@@ -26,11 +26,12 @@ Plan: [`SLICES.md`](SLICES.md)
 
 ## Slice 12 completed
 
+- Commits: `e8a4f59` (feat), `8b19a39` (`.overmind/` gitignore)
 - `overmind_setup.py` — `tag_if_active`, `capture_pipeline_error`
 - `trace_collector.py` — optional span attributes on `record()`
 - `main.py` — request tags; tavily/thrad attrs; errors captured; `thrad.bid` under `adblend.chat`
 - `tests/test_overmind_tags.py`, updated `test_trace_collector.py`
-- `README.md` — Overmind dashboard quick start
+- `README.md`, slice docs — Overmind dashboard + Scenario G
 
 ## Slice 11 completed
 
@@ -64,11 +65,12 @@ Plan: [`SLICES.md`](SLICES.md)
 
 ## Slice 7 completed
 
-- `overmind_setup.py` — optional `OVERMIND_API_KEY` init (`providers=["anthropic"]`)
+- `overmind_setup.py` — optional `OVERMIND_API_KEY` init (`providers=["anthropic"]`; auto-traces `anthropic.Anthropic` calls)
 - `trace_collector.py` — per-request spans + OTEL when Overmind is on
 - `POST /chat` returns `trace`; `/health` exposes `overmind_configured`
 - `TracePanel` — span list with latency bars (Overmind vs local label)
-- Pipeline order: `tavily.search` → `claude.intent` (freeform) → `claude.respond` → `claude.answer_align` → `thrad.bid`
+- Pipeline under `adblend.chat`: `tavily.search` → `claude.intent` (freeform) → `claude.respond` → `claude.answer_align` → `thrad.bid` (when gated)
+- Slice 12 adds dashboard tags, Tavily/Thrad span attributes, and `capture_exception` on failures
 
 ## Slice 6 completed
 

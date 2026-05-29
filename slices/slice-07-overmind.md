@@ -23,13 +23,13 @@ Each `/chat` request records timed spans via `TraceCollector` (always) and mirro
 | `claude.answer_align` | Every query (slice 10) |
 | `thrad.bid` | When ads enabled and score ≥ 0.70 |
 
-Parent span `adblend.chat` wraps the pipeline for the Overmind dashboard.
+Parent span `adblend.chat` wraps the full `/chat` request for the Overmind dashboard, including optional `thrad.bid` (slice 12 moved bid under the same root).
 
 ---
 
 ## Shipped implementation
 
-**Install:** `overmind-sdk` (in `requirements.txt`)
+**Install:** `overmind` (in `requirements.txt`, `>=0.1.50`)
 
 **File:** `backend/overmind_setup.py` — called once at startup from `main.py`:
 
@@ -42,7 +42,9 @@ init(
 )
 ```
 
-**File:** `backend/trace_collector.py` — `TraceCollector.record(name)` times each step and calls `get_tracer().start_as_current_span(name)` when Overmind is available. Works locally without an API key.
+**File:** `backend/trace_collector.py` — `TraceCollector.record(name, attributes=...)` times each step and mirrors OTEL spans when Overmind is available. Optional attribute dict (slice 12) is applied on span close. Works locally without an API key.
+
+**Helpers (slice 12):** `tag_if_active`, `capture_pipeline_error` in `overmind_setup.py` — no-op without `OVERMIND_API_KEY`.
 
 **Response:** `trace` field on `ChatResponse` from `TraceCollector.to_dict()` — not `get_last_trace_summary()`.
 
@@ -89,6 +91,6 @@ OVERMIND_ENVIRONMENT=development
 
 ---
 
-## Follow-up
+## Extension (slice 12 — shipped)
 
-**Slice 12** — dashboard metadata and error capture: [`slice-12-overmind-observability.md`](slice-12-overmind-observability.md) (`set_tag`, span attributes, `capture_exception`). Implement after this slice is stable in production demos.
+Dashboard metadata and error capture: [`slice-12-overmind-observability.md`](slice-12-overmind-observability.md) — `set_tag` on requests, span attributes on Tavily/Thrad steps, `capture_exception` on pipeline failures. Branch `feat/slice-12-overmind-observability` (commits `e8a4f59`, `8b19a39`).

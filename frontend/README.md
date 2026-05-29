@@ -35,7 +35,8 @@ npm run lint     # ESLint
 
 - Resizable chat / side split (`ResizableSplitPane`, persisted in `localStorage`)
 - Collapsible long assistant replies (`ChatPanel`)
-- Side panel: intent, ad placement, alignment, metrics, unit economics, trace (expand **Technical details** for tokens)
+- Side panel: intent, ad placement, alignment, metrics, unit economics, pipeline trace (expand **Technical details** for tokens)
+- Trace badge **Overmind** vs **Local** when `OVERMIND_API_KEY` is set on the backend (`GET /health` → `overmind_configured`)
 - Header: API live/offline pill, **Reset demo**
 
-See [`../slices/PROGRESS.md`](../slices/PROGRESS.md) for slice history.
+See [`../slices/PROGRESS.md`](../slices/PROGRESS.md) and [`../slices/slice-12-overmind-observability.md`](../slices/slice-12-overmind-observability.md) for tracing details.

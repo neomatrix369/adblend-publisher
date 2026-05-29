@@ -51,7 +51,7 @@ score ≥ 0.7 + ads on → [Slice 3] Thrad bid → ad in side panel
 
 **Must Have total: ~95 min**  
 **Should Have total: ~200 min** (includes slices 9–11, 9b)  
-**Could Have total: ~50 min** (slice 7 done; slice 8 remainder; slice 12 Overmind depth)
+**Could Have total: ~50 min** (slices 7 + 12 done; **~10 min** remains for slice 8 error hardening)
 
 ### Slice 8 vs 9 (plan change)
 

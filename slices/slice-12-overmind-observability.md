@@ -164,6 +164,9 @@ After Scenario F (unit economics) in [`slice-08-polish.md`](slice-08-polish.md):
 | `tests/test_overmind_tags.py` | Helper unit tests |
 | `tests/test_trace_collector.py` | Attributes dict smoke test |
 | `README.md` | Overmind dashboard subsection |
+| `.gitignore` | Ignore `.overmind/` (local `overmind init` config; use repo `.env` for API key) |
+
+**Commits:** `e8a4f59` · `8b19a39` on `feat/slice-12-overmind-observability`
 
 ---
 

@@ -2,7 +2,7 @@
 
 Hackathon demo for **Cursor × Thrad · London · 28 May 2026** (Track 2 — Sell-Side & Measurement).
 
-Publisher-side console: grounded chat, commercial intent gating, mock Thrad placements, session metrics, optional Overmind tracing, answer alignment, and per-query unit economics (COGS).
+Publisher-side console: grounded chat, commercial intent gating, mock Thrad placements, session metrics, optional Overmind tracing (dashboard tags + span attributes), answer alignment, and per-query unit economics (COGS).
 
 Licensed under [MIT](LICENSE).
 
@@ -67,7 +67,9 @@ Copy [`.env.example`](.env.example) to repo-root `.env` and/or `backend/.env`.
 |----------|----------|---------|
 | `TAVILY_API_KEY` | Yes (for live search) | Tavily grounding |
 | `ANTHROPIC_API_KEY` | Yes (for live chat) | Intent, response, answer classifier |
-| `OVERMIND_API_KEY` | No | Overmind dashboard tracing |
+| `OVERMIND_API_KEY` | No | Overmind dashboard tracing ([console.overmindlab.ai](https://console.overmindlab.ai)) |
+| `OVERMIND_SERVICE_NAME` | No | Dashboard service name (default `adblend-publisher`) |
+| `OVERMIND_ENVIRONMENT` | No | Trace environment label (default `development`) |
 | `ANTHROPIC_*_USD_PER_MTOK` | No | Unit economics overrides (slice 11) |
 | `TAVILY_USD_PER_SEARCH` | No | Tavily COGS default $0.01/search |
 
@@ -75,10 +77,15 @@ Mock Thrad ads — no Thrad signup required (`thrad_mode: mock` on `/health`).
 
 ### Overmind dashboard (optional)
 
-1. Sign up at [console.overmindlab.ai](https://console.overmindlab.ai) and set `OVERMIND_API_KEY` in `.env`.
-2. Restart the backend; `/health` should report `overmind_configured: true`.
-3. Run a chat query, then open the console → service **`adblend-publisher`** → trace **`adblend.chat`**.
-4. Filter by tags such as `chat.source` (`dropdown` vs `freeform`) and `intent.tier`. Manual spans include `tavily.from_cache` on repeat searches.
+Same pattern as the [Overmind Python quick start](https://docs.overmindlab.ai/guides/sdk-python): call `init()` once at startup with `providers=["anthropic"]`, then use the existing `anthropic.Anthropic()` clients unchanged—calls are auto-traced. We add pipeline spans and tags on top.
+
+1. Sign up at [console.overmindlab.ai](https://console.overmindlab.ai); copy the `ovr_...` key into repo-root `.env` (not `.overmind/`, which is gitignored local CLI config).
+2. Restart the backend; `/health` should report `overmind_configured: true` and the UI trace badge **Overmind**.
+3. Run a chat query; open the console → service **`adblend-publisher`** → parent span **`adblend.chat`** (includes search, Claude steps, and optional `thrad.bid`).
+4. **Tags:** `chat.source`, `chat.ads_enabled`, `intent.scored_live`, `intent.tier`.
+5. **Span attributes:** `tavily.from_cache`, `tavily.source_count`, `intent.score`, `thrad.ad_served` (repeat queries show cache hits).
+
+Without a key, the in-app trace panel still works in **Local** mode (`TraceCollector` only).
 
 ## API endpoints
 
@@ -94,7 +101,12 @@ Mock Thrad ads — no Thrad signup required (`thrad_mode: mock` on `/health`).
 
 ```
 frontend/          Next.js (App Router) + Tailwind — publisher UI
-backend/           FastAPI — chat pipeline, metrics, pricing
+backend/           FastAPI — chat pipeline, metrics, pricing, tracing
+  main.py          POST /chat orchestration
+  overmind_setup.py   optional Overmind init, tags, error capture
+  trace_collector.py  UI trace + OTEL spans
+  intent.py, claude_client.py, answer_focus.py, alignment.py
+  tavily_client.py, thrad_client.py, metrics.py, service_pricing.py
 data/              golden_dataset.json (89 entries + personas)
 scripts/           enrich_golden_personas.py
 slices/            Slice plan and per-slice specs

@@ -33,7 +33,7 @@ Design direction: **UI/UX Pro Max** (`--design-system` for SaaS ad-tech analytic
 | `SidePanel.tsx` | Panel cards, ads toggle, alignment/cost/trace in technical details |
 | `AdPlacementPanel.tsx` | Sponsored placement block (9b) |
 | `MetricsPanel.tsx` | Reset with spinner, clearer rows; `ImpactPanel` wrapper (9b) |
-| `TracePanel.tsx` | Overmind/local badge, latency bars |
+| `TracePanel.tsx` | Overmind/local badge, per-span latency bars (backend tags/attrs in slice 12) |
 | `ResizableSplitPane.tsx` | Drag/keyboard resize; width persisted in `localStorage` |
 | `components/ui/ImpactPanel.tsx` | Shared hero panel chrome (9b) |
 | `lib/tier-styles.ts` | Shared tier labels and badge colours |

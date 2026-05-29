@@ -1,6 +1,6 @@
 # Slice 8 — Polish + Demo Prep (remainder)
 **Priority:** Could Have | **Est:** 10 min  
-**Depends on:** Slices 1–11 (most polish shipped in slices 9–11)
+**Depends on:** Slices 1–12 (most polish shipped in slices 9–11; Overmind depth in 12)
 
 ---
 
@@ -21,6 +21,13 @@ Close remaining demo rough edges **not** already delivered in slices 9–11: res
 - [x] Loading: intent skeleton, placement message, chat status text
 - [x] Resizable chat/side split (`ResizableSplitPane`, `localStorage`)
 - [x] Collapse/expand for long assistant answers (`ChatPanel`)
+
+## Shipped in Slice 12 (do not re-implement here)
+
+- [x] Overmind request tags (`chat.source`, `intent.tier`, etc.)
+- [x] Span attributes (`tavily.from_cache`, `thrad.ad_served`)
+- [x] `capture_exception` on pipeline failures when Overmind configured
+- [x] Demo script Scenario G — see below
 
 ---
 
@@ -71,11 +78,11 @@ Close remaining demo rough edges **not** already delivered in slices 9–11: res
 2. Point to per-step COGS (Tavily, Claude intent/respond/align, Thrad)
 3. Expand **Technical details** for aggregate token USD; note session COGS in metrics
 
-**Scenario G — Overmind depth (slice 12, when shipped):**
-1. Set `OVERMIND_API_KEY`; confirm trace badge **Overmind**
-2. Run Scenario A; open Overmind console → `adblend-publisher` / `adblend.chat`
-3. Show tags (`chat.source`, `ads_enabled`) and nested Anthropic spans
-4. Repeat query — `tavily.from_cache` on span (slice 12 attribute)
+**Scenario G — Overmind depth (slice 12):**
+1. Set `OVERMIND_API_KEY` in repo `.env`; restart backend; trace badge **Overmind**
+2. Run Scenario A; open [console.overmindlab.ai](https://console.overmindlab.ai) → `adblend-publisher` / `adblend.chat`
+3. Show tags (`chat.source`, `chat.ads_enabled`, `intent.tier`) and nested Anthropic spans under `claude.respond`
+4. Repeat the same dropdown question — `tavily.from_cache: true` on `tavily.search`
 
 ---
 
