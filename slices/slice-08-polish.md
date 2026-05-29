@@ -15,7 +15,7 @@ Close remaining demo rough edges **not** already delivered in slices 9–11: res
 - [x] Viewport locked to `h-dvh`; chat and side panel scroll independently
 - [x] Long assistant replies scroll to **start** of bubble (not clipped mid-answer)
 - [x] Tavily in-memory cache + `clear_cache()` on demo reset
-- [x] `POST /demo/reset` (metrics + cache)
+- [x] `POST /demo/reset` (metrics + Tavily cache; extended in slice 8 to all Claude step caches)
 - [x] **Reset demo** header button (full UI + backend reset)
 - [x] **Ads enabled** toggle + `ads_enabled` on `POST /chat`
 - [x] Loading: intent skeleton, placement message, chat status text
@@ -25,7 +25,7 @@ Close remaining demo rough edges **not** already delivered in slices 9–11: res
 ## Shipped in Slice 12 (do not re-implement here)
 
 - [x] Overmind request tags (`chat.source`, `intent.tier`, etc.)
-- [x] Span attributes (`tavily.from_cache`, `thrad.ad_served`)
+- [x] Span attributes (`tavily.from_cache`, `thrad.ad_served`; Claude step attrs in slice 8)
 - [x] `capture_exception` on pipeline failures when Overmind configured
 - [x] Demo script Scenario G — see below
 
@@ -95,4 +95,4 @@ Close remaining demo rough edges **not** already delivered in slices 9–11: res
 
 ## Branch
 
-Use `feat/slice-08-polish-demo` or fold into a small follow-up PR when hardening error paths.
+`feat/slice-08-pipeline-cache` — per-step cache merged here; fold error hardening into same branch or a small follow-up PR.

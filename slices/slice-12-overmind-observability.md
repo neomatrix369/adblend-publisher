@@ -58,6 +58,9 @@ Extend `TraceCollector.record()` (or a thin helper) to accept optional attribute
 | Span | Attributes (examples) |
 |------|------------------------|
 | `tavily.search` | `tavily.from_cache` (bool), `tavily.source_count` (int) |
+| `claude.intent` | `claude.intent.from_cache` (bool) — freeform only; slice 8 |
+| `claude.respond` | `claude.respond.from_cache` (bool) — slice 8 |
+| `claude.answer_align` | `claude.answer_align.from_cache` (bool) — slice 8 |
 | `thrad.bid` | `thrad.ad_served` (bool), `intent.score` (float) |
 
 Use `span.set_attribute` on the current OTEL span inside `record()`’s `finally` block (attributes known after step completes).
@@ -140,8 +143,10 @@ After Scenario F (unit economics) in [`slice-08-polish.md`](slice-08-polish.md):
 1. Ensure `OVERMIND_API_KEY` in backend env; restart uvicorn
 2. Run Scenario A (high intent dropdown) — point to trace panel
 3. Open Overmind console → filter service `adblend-publisher`, latest `adblend.chat`
-4. Show nested `claude.respond` (auto) + `tavily.search` with `from_cache` attribute on repeat query
+4. Repeat the same query — all cache attrs true (`tavily.from_cache`, `claude.respond.from_cache`, `claude.answer_align.from_cache`; plus `claude.intent.from_cache` on freeform)
 5. Mention tags: “We can slice traffic by dropdown vs live and ads on/off”
+
+Claude step cache attrs added in slice 8 — see [`slice-08-polish.md`](slice-08-polish.md).
 
 ---
 

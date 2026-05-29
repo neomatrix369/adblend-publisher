@@ -13,16 +13,16 @@
 ```
 User types / selects from dropdown
         ↓
-[Slice 2] Tavily → grounded context (cached in Slice 9 for repeat demos)
+[Slice 2] Tavily → grounded context (Tavily cache: slice 9 · Claude steps: slice 8)
         ↓
-[Slice 5] Claude → intent score (0.0–1.0)  ← live for freeform
+[Slice 5] Claude → intent score (0.0–1.0)  ← live for freeform (cached on repeat: slice 8)
           golden master score              ← static for dropdown
         ↓
 score ≥ 0.7 + ads on → [Slice 3] Thrad bid → ad in side panel
         ↓
 [Slice 6] Metrics panel updates · [Slice 7] Trace spans · [Slice 12] Overmind tags/errors (optional)
         ↓
-[Slice 10] Classify answer → alignment score (persona + focus)
+[Slice 10] Classify answer → alignment score (persona + focus; classify cached: slice 8)
         ↓
 [Slice 11] Per-service COGS + session cumulative spend
         ↓
@@ -42,7 +42,7 @@ score ≥ 0.7 + ads on → [Slice 3] Thrad bid → ad in side panel
 | 5 | Live Intent + Attributes UI | Should | 25 min | done | `feat/slice-05-intent-ui` |
 | 6 | AdTech Metrics Panel | Should | 20 min | done | `feat/slice-06-metrics-panel` |
 | 7 | Overmind Trace | Could | 20 min | done | `feat/slice-07-overmind-trace` |
-| 8 | Polish + Demo Prep (remainder) | Could | 10 min | queued | — |
+| 8 | Polish + Demo Prep (remainder) | Could | 10 min | **in progress** | `feat/slice-08-pipeline-cache` |
 | 9 | Frontend UI/UX + Demo Polish | Should | ~60 min | **done** | `feat/slice-09-frontend-ux` |
 | 9b | Publisher impact hierarchy | Should | ~20 min | **done** | `feat/slice-09-impact-hierarchy` |
 | 10 | Persona & Answer Alignment | Should | ~75 min | **done** | `main` |
@@ -51,7 +51,7 @@ score ≥ 0.7 + ads on → [Slice 3] Thrad bid → ad in side panel
 
 **Must Have total: ~95 min**  
 **Should Have total: ~200 min** (includes slices 9–11, 9b)  
-**Could Have total: ~50 min** (slices 7 + 12 done; **~10 min** remains for slice 8 error hardening)
+**Could Have total: ~50 min** (slices 7 + 12 done; slice 8 per-step cache shipped; error hardening remains)
 
 ### Slice 8 vs 9 (plan change)
 
@@ -61,7 +61,7 @@ Originally slice 8 covered demo polish (cache, reset, toggles, loading) and slic
 - Viewport + chat scroll behaviour
 - Tavily cache, `POST /demo/reset`, ads toggle, reset demo, loading affordances
 
-**Slice 8** now only tracks what is still open: error-state hardening and final pre-demo checklist — see [`slice-08-polish.md`](slice-08-polish.md).
+**Slice 8 (follow-up)** — per-step Claude cache (`intent`, `respond`, `answer_align`) shipped on `feat/slice-08-pipeline-cache`; **still open:** error-state hardening and final pre-demo checklist — see [`slice-08-polish.md`](slice-08-polish.md).
 
 **Slice 9** spec: [`slice-09-frontend-ux.md`](slice-09-frontend-ux.md)
 
@@ -123,7 +123,7 @@ Top-level `personas[]` (id, role, description) returns with `GET /dataset` from 
 
 | Prize | Slice | Status |
 |---|---|---|
-| Best use of Tavily | 2 (+ cache in 9) | Shipped |
+| Best use of Tavily | 2 (+ Tavily cache in 9, full pipeline cache in 8) | Shipped |
 | Best use of Overmind | 7 + 12 | Shipped |
 | Best use of Alpic | — | Out of scope |
 | Best use of Cursor | All | Use Composer throughout |

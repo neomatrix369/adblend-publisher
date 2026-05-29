@@ -24,11 +24,12 @@ Last updated: 2026-05-29
 
 ## Slice 8 — per-step cache (partial)
 
+- Commit: `45c04d9` on `feat/slice-08-pipeline-cache`
 - `backend/demo_step_cache.py` — namespaced in-memory stores + key helpers
 - `backend/intent.py`, `claude_client.py`, `answer_focus.py` — `from_cache` on results
 - `backend/main.py` — span attrs; `POST /demo/reset` clears all pipeline caches
 - `backend/service_pricing.py` — cached Anthropic steps = $0
-- Tests: `test_demo_step_cache.py`, `test_intent_cache.py`, `test_respond_cache.py`, `test_align_cache.py`
+- Tests: `test_demo_step_cache.py`, `test_intent_cache.py`, `test_respond_cache.py`, `test_align_cache.py` (50 backend tests total)
 
 ## Slice 12 completed
 

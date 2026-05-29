@@ -8,7 +8,7 @@
 
 | Service | Unit | Default | Notes |
 |---------|------|---------|-------|
-| Anthropic (Claude Sonnet 4) | $/MTok in · out | $3 · $15 | `ANTHROPIC_INPUT_USD_PER_MTOK`, `ANTHROPIC_OUTPUT_USD_PER_MTOK`; model from `ANTHROPIC_MODEL` |
+| Anthropic (Claude Sonnet 4) | $/MTok in · out | $3 · $15 | `ANTHROPIC_INPUT_USD_PER_MTOK`, `ANTHROPIC_OUTPUT_USD_PER_MTOK`; model from `ANTHROPIC_MODEL`; cached step = $0 (slice 8) |
 | Tavily | $/search | $0.01 | `TAVILY_USD_PER_SEARCH`; cached search = $0 |
 | Thrad (mock) | $/bid | $0 | `THRAD_USD_PER_BID` when live bidding ships |
 
@@ -16,10 +16,10 @@
 
 | Trace step | Cost basis |
 |------------|------------|
-| `tavily.search` | Flat per search if not cache hit |
-| `claude.intent` | Input/output tokens + split USD (omitted when dropdown static intent) |
-| `claude.respond` | Input/output tokens + split USD |
-| `claude.answer_align` | Input/output tokens + split USD |
+| `tavily.search` | Flat per search; $0 on cache hit (`from_cache`) |
+| `claude.intent` | Input/output tokens + split USD; $0 on cache hit (freeform only; omitted for dropdown static intent) |
+| `claude.respond` | Input/output tokens + split USD; $0 on cache hit |
+| `claude.answer_align` | Input/output tokens + split USD; $0 on cache hit |
 | `thrad.bid` | Flat per bid attempt when gate passes |
 
 ## API (`ChatResponse.costs`)
@@ -56,16 +56,17 @@
 
 `SessionMetrics` gains `session_cogs_usd` (accumulates per query; resets with metrics/demo reset).
 
-`tavily_client.search` returns `TavilySearchResult { sources, from_cache }` for zero-cost cache hits.
+`tavily_client.search` returns `TavilySearchResult { sources, from_cache }` for zero-cost cache hits. Claude steps (`score_intent`, `generate_response`, `classify_answer`) return `from_cache` on repeat queries via `demo_step_cache.py` (slice 8); cached Anthropic lines show label `(cached)`, `amount_usd: 0`, and `from_cache: true`.
 
 ## Backend modules
 
 | File | Role |
 |------|------|
-| `backend/service_pricing.py` | Rates, `build_query_costs`, `build_anthropic_token_summary`, per-line split costs |
+| `backend/service_pricing.py` | Rates, `build_query_costs`, `build_anthropic_token_summary`, per-line split costs; `*_from_cache` → $0 |
 | `backend/main.py` | Wire costs into `/chat` response |
 | `backend/metrics.py` | Session COGS accumulation |
-| `backend/tavily_client.py` | Cache-aware search result |
+| `backend/tavily_client.py` | Tavily in-memory cache + `from_cache` |
+| `backend/demo_step_cache.py` | Per-step Claude caches (`intent`, `respond`, `align`) — slice 8 |
 
 ## Frontend
 
@@ -91,8 +92,9 @@ Shown in: Unit economics (per step), Technical details → Token usage (aggregat
 
 ## Exit criteria
 
-- [x] `PYTHONPATH=. uv run pytest` — all tests pass (incl. `test_service_pricing.py`, `test_metrics.py`, `test_tavily_cache.py`)
+- [x] `PYTHONPATH=. uv run pytest` — 50 tests pass (incl. `test_service_pricing.py`, `test_metrics.py`, `test_tavily_cache.py`, per-step cache tests)
 - [x] Tavily cache exposes `from_cache`; uncached vs cached cost lines correct
+- [x] Cached Anthropic steps (`claude.respond`, `claude.answer_align`, live `claude.intent`) = $0 with `(cached)` label (slice 8)
 - [x] `/chat` returns `costs` with lines aligned to trace steps
 - [x] Anthropic lines include `input_cost_usd`, `output_cost_usd`, `model`
 - [x] `costs.anthropic_tokens` aggregates all Claude steps for the query
